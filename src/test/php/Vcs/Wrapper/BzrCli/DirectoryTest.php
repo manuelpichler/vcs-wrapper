@@ -33,10 +33,10 @@ class DirectoryTest extends TestCase
 
     public function testIterateRootDirContents()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
-        $dir = new \vcsBzrCliDirectory( $this->tempDir, '/' );
+        $dir = new Directory( $this->tempDir, '/' );
 
         $files = array();
         foreach ( $dir as $file )
@@ -57,10 +57,10 @@ class DirectoryTest extends TestCase
 
     public function testRecursiveIterator()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
-        $dir      = new \vcsBzrCliDirectory( $this->tempDir, '/' );
+        $dir      = new Directory( $this->tempDir, '/' );
         $iterator = new RecursiveIteratorIterator( $dir, RecursiveIteratorIterator::SELF_FIRST );
 
         $files = array();
@@ -84,10 +84,10 @@ class DirectoryTest extends TestCase
 
     public function testIterateSubDirContents()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
-        $dir = new \vcsBzrCliDirectory( $this->tempDir, '/dir1/' );
+        $dir = new Directory( $this->tempDir, '/dir1/' );
 
         $files = array();
         foreach ( $dir as $file )

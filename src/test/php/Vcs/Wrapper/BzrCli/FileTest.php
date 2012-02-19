@@ -53,9 +53,9 @@ class FileTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             "2",
@@ -65,9 +65,9 @@ class FileTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             array(
@@ -80,9 +80,9 @@ class FileTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             'Richard Bateman <taxilian@gmail.com>',
@@ -92,9 +92,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorOldVersion()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             'richard <richard@shaoden>',
@@ -104,9 +104,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorInvalidVersion()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getAuthor( 'invalid' );
@@ -117,11 +117,11 @@ class FileTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
-        $log = $file->getLog();
+        $file->getLog();
         
         $this->assertEquals(
             array(
@@ -138,9 +138,9 @@ class FileTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             new \vcsLogEntry(
@@ -152,9 +152,9 @@ class FileTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getLogEntry( "no_such_version" );
@@ -165,9 +165,9 @@ class FileTest extends TestCase
 
     public function testGetFileContents()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "Some other test file\n",
@@ -177,9 +177,9 @@ class FileTest extends TestCase
 
     public function testGetFileMimeType()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "application/octet-stream",
@@ -189,9 +189,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlame()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -220,9 +220,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlameInvalidVersion()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->blame( "no_such_version" );
@@ -233,9 +233,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiff()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $diff = $file->getDiff( "1", "2" );
         
@@ -256,9 +256,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiffUnknownRevision()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-        $file = new \vcsBzrCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $diff = $file->getDiff( "8" );
