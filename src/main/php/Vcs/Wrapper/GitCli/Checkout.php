@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\GitCli;
+
 /**
  * Handler for Git repositories
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  */
-class vcsGitCliCheckout extends vcsGitCliDirectory implements vcsCheckout
+class Checkout extends Directory implements \vcsCheckout
 {
     /**
      * Construct repository with repository root path
@@ -63,21 +61,21 @@ class vcsGitCliCheckout extends vcsGitCliDirectory implements vcsCheckout
         {
             if ( count( glob( $this->root . '/*' ) ) )
             {
-                throw new vcsCheckoutFailedException( $url );
+                throw new \vcsCheckoutFailedException( $url );
             }
 
             rmdir( $this->root );
         }
 
-        $process = new vcsGitCliProcess();
-        $return = $process->argument( 'clone' )->argument( $url )->argument( new pbsPathArgument( $this->root ) )->execute();
+        $process = new Process();
+        $return = $process->argument( 'clone' )->argument( $url )->argument( new \pbsPathArgument( $this->root ) )->execute();
 
         // On windows GIT does not exit with a non-zero exit code on false 
         // checkouts, so we need to handle this ourselves
         if ( ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' ) &&
              ( strpos( $process->stderrOutput, 'fatal' ) !== false ) )
         {
-            throw new pbsSystemProcessNonZeroExitCodeException(
+            throw new \pbsSystemProcessNonZeroExitCodeException(
                 128,
                 $process->stdoutOutput,
                 $process->stderrOutput,
@@ -109,14 +107,14 @@ class vcsGitCliCheckout extends vcsGitCliDirectory implements vcsCheckout
 
         if ( $version === null )
         {
-            $process = new vcsGitCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
             $process->argument( 'pull' )->argument( 'origin' )->argument( 'master' );
             $process->execute();
         }
         else
         {
-            $process = new vcsGitCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
             $process->argument( 'checkout' )->argument( $version );
             $process->execute();
@@ -133,7 +131,7 @@ class vcsGitCliCheckout extends vcsGitCliDirectory implements vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a vcsCheckout, a vcsDirectory or a vcsFile
+     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
      * instance, depending on the given path.
      * 
      * @param string $path
@@ -146,7 +144,7 @@ class vcsGitCliCheckout extends vcsGitCliDirectory implements vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( str_replace( '\\', '/', $fullPath ), str_replace( '\\', '/', $this->root ) ) !== 0 ) )
         {
-            throw new vcsFileNotFoundException( $path );
+            throw new \vcsFileNotFoundException( $path );
         }
 
         switch ( true )
@@ -155,10 +153,10 @@ class vcsGitCliCheckout extends vcsGitCliDirectory implements vcsCheckout
                 return $this;
 
             case is_dir( $fullPath ):
-                return new vcsGitCliDirectory( $this->root, $path );
+                return new Directory( $this->root, $path );
 
             default:
-                return new vcsGitCliFile( $this->root, $path );
+                return new File( $this->root, $path );
         }
     }
 }

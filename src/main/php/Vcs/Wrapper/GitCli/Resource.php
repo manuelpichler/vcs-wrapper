@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\GitCli;
+
 /**
  * Resource implementation vor Git Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  */
-abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vcsAuthored, vcsLogged, vcsDiffable
+abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAuthored, \vcsLogged, \vcsDiffable
 {
     /**
      * Current version of the given resource
@@ -50,7 +48,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
     protected function getResourceInfo()
     {
         if ( ( $this->currentVersion === null ) ||
-             ( ( $info = vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
+             ( ( $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
         {
             $log = $this->getResourceLog();
 
@@ -64,7 +62,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
                 $info = end( $log );
             }
 
-            vcsCache::cache( $this->path, $this->currentVersion = (string) $info->version, 'info', $info );
+            \vcsCache::cache( $this->path, $this->currentVersion = (string) $info->version, 'info', $info );
         }
 
         return $info;
@@ -79,10 +77,10 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
      */
     protected function getResourceLog()
     {
-        if ( ( $log = vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
+        if ( ( $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
         {
             // Refetch the basic logrmation, and cache it.
-            $process = new vcsGitCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
 
             // Fecth for specified version, if set
@@ -92,7 +90,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
             }
 
             // Execute log command
-            $process->argument( 'log' )->argument( '--pretty=format:%H;%cn;%ct;%s%n%b' )->argument( new pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( 'log' )->argument( '--pretty=format:%H;%cn;%ct;%s%n%b' )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
 
             // Parse commit log
             $lines      = preg_split( '(\r\n|\r|\n)', $process->stdoutOutput );
@@ -104,7 +102,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
                 if ( preg_match( '(^(?P<version>[0-9a-f]{40});(?P<author>.*);(?P<date>[0-9]+);(?P<message>.*))', $lines[$i], $match ) )
                 {
                     $lastCommit = $match['version'];
-                    $log[$lastCommit] = new vcsLogEntry( $lastCommit, $match['author'], $match['message'], $match['date'] );
+                    $log[$lastCommit] = new \vcsLogEntry( $lastCommit, $match['author'], $match['message'], $match['date'] );
                 }
                 elseif ( $lastCommit !== null )
                 {
@@ -115,7 +113,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
             $last = end( $log );
 
             // Cache extracted data
-            vcsCache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
+            \vcsCache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
         }
 
         return $log;
@@ -131,10 +129,10 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
      */
     protected function getResourceProperty( $property )
     {
-        if ( ( $value = vcsCache::get( $this->path, $this->currentVersion, $property ) ) === false )
+        if ( ( $value = \vcsCache::get( $this->path, $this->currentVersion, $property ) ) === false )
         {
             // Refetch the basic mimeTypermation, and cache it.
-            $process = new vcsGitCliProcess();
+            $process = new Process();
 
             // Fecth for specified version, if set
             if ( $this->currentVersion !== null )
@@ -143,10 +141,10 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
             }
 
             // Execute mimeTyper command
-            $return = $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new pbsPathArgument( $this->root . $this->path ) )->execute();
+            $return = $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
 
             $value = trim( $process->stdoutOutput );
-            vcsCache::cache( $this->path, $this->currentVersion, $property, $value );
+            \vcsCache::cache( $this->path, $this->currentVersion, $property, $value );
         }
 
         return $value;
@@ -227,7 +225,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
 
         if ( !isset( $log[$version] ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version]->author;
@@ -237,7 +235,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
      * Get full revision log
      *
      * Return the full revision log for the given resource. The revision log
-     * should be returned as an array of vcsLogEntry objects.
+     * should be returned as an array of \vcsLogEntry objects.
      *
      * @return array
      */
@@ -252,7 +250,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
      * Get the revision log entry for the spcified version.
      * 
      * @param string $version
-     * @return vcsLogEntry
+     * @return \vcsLogEntry
      */
     public function getLogEntry( $version )
     {
@@ -260,7 +258,7 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
 
         if ( !isset( $log[$version] ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version];
@@ -275,29 +273,29 @@ abstract class vcsGitCliResource extends vcsResource implements vcsVersioned, vc
      *
      * @param string $version 
      * @param string $current 
-     * @return vcsResource
+     * @return \vcsResource
      */
     public function getDiff( $version, $current = null )
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = vcsCache::get( $this->path, $version, 'diff' ) ) === false )
+        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
-            $process = new vcsGitCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
             $process->argument( 'diff' )->argument( '--no-ext-diff' );
-            $process->argument( $version . '..' . $current )->argument( new pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( $version . '..' . $current )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
 
             // Parse resulting unified diff
-            $parser = new vcsUnifiedDiffParser();
+            $parser = new \vcsUnifiedDiffParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
-            vcsCache::cache( $this->path, $version, 'diff', $diff );
+            \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }
 
         return $diff;

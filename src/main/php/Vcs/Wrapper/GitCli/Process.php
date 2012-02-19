@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\GitCli;
+
 /**
  * Git executable wrapper for system process class
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  */
-class vcsGitCliProcess extends pbsSystemProcess
+class Process extends \pbsSystemProcess
 {
     /**
      * Static property containg information, if the version of the git CLI
@@ -70,7 +68,7 @@ class vcsGitCliProcess extends pbsSystemProcess
             return true;
         }
 
-        $process = new pbsSystemProcess( 'git' );
+        $process = new \pbsSystemProcess( 'git' );
         $process->nonZeroExitCodeException = true;
         $process->argument( '--version' )->execute();
 
