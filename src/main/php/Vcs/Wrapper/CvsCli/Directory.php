@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper archive directory wrapper
+ * PHP VCS wrapper CVS Cli directory wrapper
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,61 +17,28 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage ArchiveWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\CvsCli;
+
 /**
- * Directory implementation for archive wrapper
+ * Directory implementation vor CVS Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage ArchiveWrapper
  * @version $Revision$
  */
-class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
+class Directory extends \vcsResource implements \vcsDirectory
 {
     /**
      * Array with children resources of the directory, used for the iterator.
-     * 
-     * @var array
+     *
+     * @var \vcsResource[]
      */
     protected $resources = null;
 
     /**
-     * Initialize resources array
-     * 
-     * Initilaize the array containing all child elements of the current
-     * directly as vcsArchiveResource objects.
-     * 
-     * @return array(vcsArchiveResource)
-     */
-    protected function initializeResouces()
-    {
-        $this->resources = array();
-
-        // Build resources array, without constructing the objects yet, for
-        // lazy construction of the object tree.
-        $contents = dir( $this->root . $this->path );
-        while ( ( $path = $contents->read() ) !== false )
-        {
-            if ( ( $path === '.' ) ||
-                 ( $path === '..' ) )
-            {
-                continue;
-            }
-    
-            $this->resources[] = ( is_dir( $this->root . $this->path . $path ) ?
-                new vcsArchiveDirectory( $this->root, $this->path . $path . '/' ) :
-                new vcsArchiveFile( $this->root, $this->path . $path )
-            );
-        }
-        $contents->close();
-    }
-
-    /**
-     * Return the current element
+     * Returns the current item inside this iterator
      *
      * @return mixed
      */
@@ -86,7 +53,7 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
     }
 
     /**
-     * Move forward to next element
+     * Returns the next item of the iterator.
      *
      * @return mixed
      */
@@ -101,9 +68,9 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
     }
 
     /**
-     * Return the key of the current element
+     * Returns the key for the current pointer.
      *
-     * @return mixed
+     * @return integer
      */
     public function key()
     {
@@ -116,9 +83,9 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
     }
 
     /**
-     * Checks if current position is valid
+     * Checks if the current item is valid.
      *
-     * @return bool
+     * @return boolean
      */
     public function valid()
     {
@@ -129,9 +96,9 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
 
         return $this->current() !== false;
     }
-    
+
     /**
-     * Rewind the Iterator to the first element
+     * Set the internal pointer of an array to its first element.
      *
      * @return mixed
      */
@@ -146,9 +113,9 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
     }
 
     /**
-     * Returns an iterator for the current entry.
+     * Returns the children for this instance.
      *
-     * @return Iterator
+     * @return \vcsDirectory
      */
     public function getChildren()
     {
@@ -159,11 +126,11 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
 
         return current( $this->resources );
     }
-    
+
     /**
-     * Returns if an iterator can be created fot the current entry.
+     * Returns if this directory contains files of directories.
      *
-     * @return bool
+     * @return boolean
      */
     public function hasChildren()
     {
@@ -172,7 +139,44 @@ class vcsArchiveDirectory extends vcsArchiveResource implements vcsDirectory
             $this->initializeResouces();
         }
 
-        return current( $this->resources ) instanceof vcsDirectory;
+        return current( $this->resources ) instanceof \vcsDirectory;
+    }
+
+    /**
+     * Initialize resources array
+     *
+     * Initilaize the array containing all child elements of the current
+     * directly as Resource objects.
+     *
+     * @return array(Resource)
+     */
+    protected function initializeResouces()
+    {
+        $this->resources = array();
+
+        // Build resources array, without constructing the objects yet, for
+        // lazy construction of the object tree.
+        $directory = new \DirectoryIterator( $this->root . $this->path );
+        foreach ( $directory as $fileInfo )
+        {
+            $fileName = $fileInfo->getFilename();
+            if ( ( $fileName === '.' ) ||
+                 ( $fileName === '..' ) ||
+                 ( $fileName === 'CVS' ) )
+            {
+                continue;
+            }
+
+            $resource = null;
+            if ( $fileInfo->isDir() === true )
+            {
+                $resource = new Directory( $this->root, $this->path . $fileName . '/' );
+            }
+            else
+            {
+                $resource = new File( $this->root, $this->path . $fileName );
+            }
+            $this->resources[] = $resource;
+        }
     }
 }
-
