@@ -38,13 +38,13 @@ class CheckoutTest extends TestCase
      */
     public function testInitializeInvalidCheckout()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( '/hopefully/not/existing/cvs#repo' );
     }
 
     public function testInitializeCheckout()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
         $this->assertTrue(
@@ -55,7 +55,7 @@ class CheckoutTest extends TestCase
 
     public function testInitializeCheckoutWithVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#1.2' );
 
         $this->assertFileExists( $this->tempDir . '/file' );
@@ -65,7 +65,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckout()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
         $this->assertFalse( $checkout->update(), "Repository should already be on latest revision." );
@@ -85,23 +85,23 @@ class CheckoutTest extends TestCase
         self::copyRecursive( $dataDir, $repoDir );
 
         // Create a clean checkout of the cloned repository
-        $checkin = new \vcsCvsCliCheckout( $this->tempDir . '/in' );
+        $checkin = new Checkout( $this->tempDir . '/in' );
         $checkin->initialize( $repoDir . '#cvs' );
 
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir . '/out' );
+        $checkout = new Checkout( $this->tempDir . '/out' );
         $checkout->initialize( $repoDir . '#cvs' );
 
         // Manually add a new file
         file_put_contents( $this->tempDir . '/in/foo.txt', 'Foobar Bar Foo' );
 
         // Add file to repository
-        $add = new \vcsCvsCliProcess();
+        $add = new Process();
         $add->workingDirectory( $this->tempDir . '/in' )
             ->argument( 'add' )
             ->argument( 'foo.txt' )
             ->execute();
 
-        $commit = new \vcsCvsCliProcess();
+        $commit = new Process();
         $commit->workingDirectory( $this->tempDir . '/in' )
                ->argument( 'commit' )
                ->argument( '-m' )
@@ -118,7 +118,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckoutToOldVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
         $this->assertFileExists( $this->tempDir . '/dir1/file', 'Expected file "/dir1/file" in checkout.' );
 
@@ -128,7 +128,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckoutFromTagToHead()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#milestone' );
 
         $this->assertFileNotExists( $this->tempDir . '/dir1/file1', 'Expected file "/dir1/file1" not in checkout.' );
@@ -138,7 +138,7 @@ class CheckoutTest extends TestCase
 
     public function testGetCheckout()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#milestone' );
 
         $this->assertSame(
@@ -154,7 +154,7 @@ class CheckoutTest extends TestCase
 
     public function testGetInvalid()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#milestone' );
 
         try
@@ -168,23 +168,23 @@ class CheckoutTest extends TestCase
 
     public function testGetDirectory()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#milestone' );
 
         $this->assertEquals(
             $checkout->get( '/dir1' ),
-            new \vcsCvsCliDirectory( $this->tempDir, '/dir1' )
+            new Directory( $this->tempDir, '/dir1' )
         );
     }
 
     public function testGetFile()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#milestone' );
 
         $this->assertEquals(
             $checkout->get( '/file' ),
-            new \vcsCvsCliFile( $this->tempDir, '/file' )
+            new File( $this->tempDir, '/file' )
         );
     }
 }

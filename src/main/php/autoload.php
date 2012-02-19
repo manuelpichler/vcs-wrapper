@@ -71,25 +71,15 @@ spl_autoload_register( function( $class ) {
         'arbitXmlNodeList'                                 => 'external/xml/node_list.php',
         'vcsLogEntry'                                      => 'log_entry.php',
         'vcsResource'                                      => 'resource.php',
-        'vcsArchiveResource'                               => 'wrapper/archive/resource.php',
         'vcsDirectory'                                     => 'interfaces/directory.php',
-        'vcsArchiveDirectory'                              => 'wrapper/archive/directory.php',
         'vcsCheckout'                                      => 'interfaces/checkout.php',
-        'vcsArchiveCheckout'                               => 'wrapper/archive/checkout.php',
-        'vcsZipArchiveCheckout'                            => 'wrapper/archive/checkout/zip.php',
         'vcsFile'                                          => 'interfaces/file.php',
-        'vcsArchiveFile'                                   => 'wrapper/archive/file.php',
         'vcsVersioned'                                     => 'interfaces/versioned.php',
         'vcsAuthored'                                      => 'interfaces/authored.php',
         'vcsLogged'                                        => 'interfaces/logged.php',
         'vcsDiffable'                                      => 'interfaces/diffable.php',
-        'vcsBzrCliResource'                                => 'wrapper/bzr-cli/resource.php',
-        'vcsBzrCliDirectory'                               => 'wrapper/bzr-cli/directory.php',
-        'vcsBzrCliCheckout'                                => 'wrapper/bzr-cli/checkout.php',
         'vcsBlameable'                                     => 'interfaces/blameable.php',
-        'vcsBzrCliFile'                                    => 'wrapper/bzr-cli/file.php',
         'pbsSystemProcess'                                 => 'external/system_process/systemProcess.php',
-        'vcsBzrCliProcess'                                 => 'wrapper/bzr-cli/process.php',
         'vcsCvsCliDirectory'                               => 'wrapper/cvs-cli/directory.php',
         'vcsCvsCliCheckout'                                => 'wrapper/cvs-cli/checkout.php',
         'vcsCvsCliResource'                                => 'wrapper/cvs-cli/resource.php',
@@ -121,5 +111,9 @@ spl_autoload_register( function( $class ) {
     if ( isset( $paths[$class] ) )
     {
         include __DIR__ . DIRECTORY_SEPARATOR . $paths[$class];
+    }
+    else if ( 0 === strpos( $class, 'Vcs\\' ) )
+    {
+        include __DIR__ . '/' . strtr( $class, '\\', '/' ) . '.php';
     }
 } );

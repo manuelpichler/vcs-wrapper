@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage CvsCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\CvsCli;
+
 /**
  * Handler for CVS repositories
  *
- * @package VCSWrapper
- * @subpackage CvsCliWrapper
  * @version $Revision$
  */
-class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
+class Checkout extends Directory implements \vcsCheckout
 {
     /**
      * Construct checkout with the given root path.
@@ -39,7 +37,6 @@ class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
      * store the repository contents.
      *
      * @param string $root
-     * @return void
      */
     public function __construct( $root )
     {
@@ -71,10 +68,10 @@ class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
         }
         else
         {
-            throw new vcsInvalidRepositoryUrlException( $url, 'cvs' );
+            throw new \vcsInvalidRepositoryUrlException( $url, 'cvs' );
         }
 
-        $process = new vcsCvsCliProcess();
+        $process = new Process();
         $process
             ->argument( '-d' )
             ->argument( $repoUrl )
@@ -108,10 +105,10 @@ class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
             $version = 'HEAD';
         }
 
-        $process = new vcsCvsCliProcess();
+        $process = new Process();
         $process
             ->workingDirectory( $this->root )
-            ->redirect( vcsCvsCliProcess::STDERR, vcsCvsCliProcess::STDOUT )
+            ->redirect( Process::STDERR, Process::STDOUT )
             ->argument( 'update' )
             ->argument( '-Rd' )
             ->argument( '-r' )
@@ -127,7 +124,7 @@ class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a vcsCheckout, a vcsDirectory or a vcsFile
+     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
      * instance, depending on the given path.
      * 
      * @param string $path
@@ -140,7 +137,7 @@ class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( $fullPath, $this->root ) !== 0 ) )
         {
-            throw new vcsFileNotFoundException( $path );
+            throw new \vcsFileNotFoundException( $path );
         }
 
         switch ( true )
@@ -149,10 +146,10 @@ class vcsCvsCliCheckout extends vcsCvsCliDirectory implements vcsCheckout
                 return $this;
 
             case is_dir( $fullPath ):
-                return new vcsCvsCliDirectory( $this->root, $path );
+                return new Directory( $this->root, $path );
 
             default:
-                return new vcsCvsCliFile( $this->root, $path );
+                return new File( $this->root, $path );
         }
     }
 }

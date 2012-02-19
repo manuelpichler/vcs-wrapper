@@ -31,33 +31,33 @@ class FileTest extends TestCase
 
     public function testGetVersionString()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->assertEquals( '1.2', $file->getVersionString() );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertEquals( '1.3', $file->getVersionString() );
     }
 
     public function testGetVersions()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->assertSame( array( '1.1', '1.2' ), $file->getVersions()  );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertSame( array( '1.1', '1.2', '1.3' ), $file->getVersions()  );
     }
 
     public function testCompareVersions()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals( 0, $file->compareVersions( '1.1', '1.1' ) );
         $this->assertLessThan( 0, $file->compareVersions( '1.1', '1.2' ) );
@@ -66,37 +66,37 @@ class FileTest extends TestCase
 
     public function testGetAuthor()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->assertEquals( 'manu', $file->getAuthor() );
     }
 
     public function testGetAuthorWithVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->assertEquals( 'manu', $file->getAuthor( '1.1' ) );
     }
 
     public function testGetAuthorWithInvalidVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->setExpectedException('\vcsNoSuchVersionException');
         $file->getAuthor( '1.10' );
     }
 
     public function testGetLog()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             array(
@@ -125,10 +125,10 @@ class FileTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->assertEquals(
             new \vcsLogEntry(
                 '1.2',
@@ -142,10 +142,10 @@ class FileTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->setExpectedException( '\vcsNoSuchVersionException' );
 
@@ -154,47 +154,47 @@ class FileTest extends TestCase
 
     public function testGetFileContents()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file1' );
+        $file = new File( $this->tempDir, '/dir1/file1' );
         $this->assertEquals( "Another test file\n", $file->getContents() );
     }
 
     public function testGetFileMimeType()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file1' );
+        $file = new File( $this->tempDir, '/dir1/file1' );
         $this->assertEquals( 'application/octet-stream', $file->getMimeType() );
     }
 
     public function testGetFileVersionedFileContents()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertEquals( "Some test contents\n", $file->getVersionedContent( '1.1' ) );
     }
 
     public function testGetFileContentsInvalidVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
         $this->setExpectedException( '\vcsNoSuchVersionException' );
         $file->getVersionedContent( 'no_such_version' );
     }
 
     public function testGetFileBlame()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertEquals(
             array(
                 new \vcsBlameStruct(
@@ -222,10 +222,10 @@ class FileTest extends TestCase
 
     public function testGetFileBlameWithVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertEquals(
             array(
                 new \vcsBlameStruct(
@@ -241,20 +241,20 @@ class FileTest extends TestCase
 
     public function testGetFileBlameWithInvalidVersion()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $this->setExpectedException( '\vcsNoSuchVersionException' );
         $file->blame( 'no_such_version' );
     }
 
     public function testGetFileDiff()
     {
-        $checkout = new \vcsCvsCliCheckout( $this->tempDir );
+        $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
-        $file = new \vcsCvsCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
         $diff = $file->getDiff( '1.1' );
 
         $this->assertEquals(

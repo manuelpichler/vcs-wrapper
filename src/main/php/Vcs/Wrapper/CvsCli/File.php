@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage CvsCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\CvsCli;
+
 /**
  * File implementation vor CVS Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage CvsCliWrapper
  * @version $Revision$
  */
-class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, vcsFetchable, vcsDiffable
+class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \vcsDiffable
 {
     /**
      * Get file contents
@@ -91,19 +89,19 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
         $versions = $this->getVersions();
         if ( !in_array( $version, $versions, true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $blame = vcsCache::get( $this->path, $version, 'blame' ) ) !== false )
+        if ( ( $blame = \vcsCache::get( $this->path, $version, 'blame' ) ) !== false )
         {
             return $blame;
         }
 
         // Refetch the basic blamermation, and cache it.
-        $process = new vcsCvsCliProcess();
+        $process = new Process();
         $process
             ->workingDirectory( $this->root )
-            ->redirect( vcsCvsCliProcess::STDERR, vcsCvsCliProcess::STDOUT )
+            ->redirect( Process::STDERR, Process::STDOUT )
             ->argument( 'annotate' )
             ->argument( '-r' )
             ->argument( $version )
@@ -125,7 +123,7 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
 
             preg_match( $regexp, $line, $match );
 
-            $blame[] = new vcsBlameStruct(
+            $blame[] = new \vcsBlameStruct(
                 trim( $match['content'] ),
                 trim( $match['revision'] ),
                 trim( $match['author'] ),
@@ -133,7 +131,7 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
             );
         }
 
-        vcsCache::cache( $this->path, $version, 'blame', $blame );
+        \vcsCache::cache( $this->path, $version, 'blame', $blame );
 
         return $blame;
     }
@@ -151,16 +149,16 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
         $versions = $this->getVersions();
         if ( !in_array( $version, $versions, true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $content = vcsCache::get( $this->path, $version, 'content' ) ) === false )
+        if ( ( $content = \vcsCache::get( $this->path, $version, 'content' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
-            $process = new vcsCvsCliProcess();
+            $process = new Process();
             $process
                 ->workingDirectory( $this->root )
-                ->redirect( vcsCvsCliProcess::STDERR, vcsCvsCliProcess::STDOUT )
+                ->redirect( Process::STDERR, Process::STDOUT )
                 ->argument( 'update' )
                 ->argument( '-p' )
                 ->argument( '-r' )
@@ -170,7 +168,7 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
 
             $output  = $process->stdoutOutput;
             $content = ltrim( substr( $output, strpos( $output, '***************' ) + 15 ) );
-            vcsCache::cache( $this->path, $version, 'content', $content );
+            \vcsCache::cache( $this->path, $version, 'content', $content );
         }
 
         return $content;
@@ -185,25 +183,25 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
      *
      * @param string $version 
      * @param string $current 
-     * @return vcsResource
+     * @return \vcsResource
      */
     public function getDiff( $version, $current = null )
     {
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = vcsCache::get( $this->path, $version, 'diff' ) ) !== false )
+        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) !== false )
         {
             return $diff;
         }
 
         // Refetch the basic content information, and cache it.
-        $process = new vcsCvsCliProcess();
+        $process = new Process();
         // WTF: Why is there a non zero exit code?
         $process->nonZeroExitCodeException = false;
         // Configure process instance
         $process
             ->workingDirectory( $this->root )
-            ->redirect( vcsCvsCliProcess::STDERR, vcsCvsCliProcess::STDOUT )
+            ->redirect( Process::STDERR, Process::STDOUT )
             ->argument( 'diff' )
             ->argument( '-u' )
             ->argument( '-r' )
@@ -213,9 +211,9 @@ class vcsCvsCliFile extends vcsCvsCliResource implements vcsFile, vcsBlameable, 
             ->argument( '.' . $this->path )
             ->execute();
 
-        $parser = new vcsUnifiedDiffParser();
+        $parser = new \vcsUnifiedDiffParser();
         $diff   = $parser->parseString( $process->stdoutOutput );
-        vcsCache::cache( $this->path, $version, 'diff', $diff );
+        \vcsCache::cache( $this->path, $version, 'diff', $diff );
 
         return $diff;
     }
