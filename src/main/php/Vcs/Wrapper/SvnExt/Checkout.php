@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage SvnExtWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\SvnExt;
+
 /**
  * Handler for SVN repositories
  *
- * @package VCSWrapper
- * @subpackage SvnExtWrapper
  * @version $Revision$
  */
-class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
+class Checkout extends Directory implements \vcsCheckout
 {
     /**
      * Construct repository with repository root path
@@ -38,8 +36,7 @@ class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
      * Construct the repository with the repository root path, which will be
      * used to store the repository contents.
      *
-     * @param string $root 
-     * @return void
+     * @param string $root
      */
     public function __construct( $root )
     {
@@ -74,7 +71,7 @@ class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
                // To get the current revision number we need to also call update
              ( $this->currentVersion = (string) svn_update( $this->root ) ) === false )
         {
-            throw new vcsCheckoutFailedException( $url );
+            throw new \vcsCheckoutFailedException( $url );
         }
 
         $this->currentVersion = $this->getVersionString();
@@ -116,7 +113,7 @@ class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a vcsCheckout, a vcsDirectory or a vcsFile
+     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
      * instance, depending on the given path.
      * 
      * @param string $path
@@ -129,7 +126,7 @@ class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( $fullPath, $this->root ) !== 0 ) )
         {
-            throw new vcsFileNotFoundException( $path );
+            throw new \vcsFileNotFoundException( $path );
         }
 
         switch ( true )
@@ -138,10 +135,10 @@ class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
                 return $this;
 
             case is_dir( $fullPath ):
-                return new vcsSvnExtDirectory( $this->root, $path );
+                return new Directory( $this->root, $path );
 
             default:
-                return new vcsSvnExtFile( $this->root, $path );
+                return new File( $this->root, $path );
         }
     }
 }

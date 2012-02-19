@@ -31,9 +31,9 @@ class FileTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             "5",
@@ -43,9 +43,9 @@ class FileTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             array( "1", "5" ),
@@ -55,9 +55,9 @@ class FileTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             'kore',
@@ -67,9 +67,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorOldVersion()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             'kore',
@@ -79,9 +79,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorInvalidVersion()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getAuthor( 'invalid' );
@@ -92,9 +92,9 @@ class FileTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -117,9 +117,9 @@ class FileTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             new \vcsLogEntry(
@@ -134,9 +134,9 @@ class FileTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getLogEntry( "no_such_version" );
@@ -147,9 +147,9 @@ class FileTest extends TestCase
 
     public function testGetFileContents()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "Some test contents\n",
@@ -159,9 +159,9 @@ class FileTest extends TestCase
 
     public function testGetFileMimeType()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "application/octet-stream",
@@ -171,9 +171,9 @@ class FileTest extends TestCase
 
     public function testGetFileVersionedFileContents()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             "Some test file\n",
@@ -183,9 +183,9 @@ class FileTest extends TestCase
 
     public function testGetFileContentsInvalidVersion()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getVersionedContent( "no_such_version" );
@@ -196,9 +196,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlame()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -221,9 +221,9 @@ class FileTest extends TestCase
 
     public function testGetBinaryFileBlame()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/binary' );
+        $file = new File( $this->tempDir, '/binary' );
 
         $this->assertEquals(
             false,
@@ -233,9 +233,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlameInvalidVersion()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->blame( "no_such_version" );
@@ -246,9 +246,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiff()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-        $file = new \vcsSvnExtFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $diff = $file->getDiff( 1 );
         

@@ -10,6 +10,8 @@ namespace Vcs\Wrapper\SvnExt;
 
 use Vcs\TestCase;
 
+use \Vcs\Wrapper\SvnCli\Process;
+
 /**
  * Tests for the SQLite cache meta data handler
  */
@@ -35,13 +37,13 @@ class CheckoutTest extends TestCase
      */
     public function testInitializeInvalidCheckout()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         @$repository->initialize( 'file:///hopefully/not/existing/svn/repo' );
     }
 
     public function testInitializeCheckout()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertTrue(
@@ -52,7 +54,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckout()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertFalse( $repository->update(), "Repository should already be on latest revision." );
@@ -69,17 +71,17 @@ class CheckoutTest extends TestCase
         $repDir = $this->extractRepository( 'svn' );
 
         // Create two repositories one for the checkin one for the test checkout
-        $checkin = new \vcsSvnExtCheckout( $this->tempDir . '/ci' );
+        $checkin = new Checkout( $this->tempDir . '/ci' );
         $checkin->initialize( 'file://' . $repDir );
 
-        $checkout = new \vcsSvnExtCheckout( $this->tempDir . '/co' );
+        $checkout = new Checkout( $this->tempDir . '/co' );
         $checkout->initialize( 'file://' . $repDir );
 
         // Manually execute update in repository
         file_put_contents( $file = $this->tempDir . '/ci/another', 'Some test contents' );
-        $svn = new \vcsSvnCliProcess();
+        $svn = new Process();
         $svn->argument( 'add' )->argument( $file )->execute();
-        $svn = new \vcsSvnCliProcess();
+        $svn = new Process();
         $svn->argument( 'commit' )->argument( $file )->argument( '-m' )->argument( '- Test commit.' )->execute();
 
         $this->assertTrue( $checkin->update(), "Checkin repository should have had an update available." );
@@ -91,7 +93,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertSame(
@@ -102,7 +104,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertSame(
@@ -115,7 +117,7 @@ class CheckoutTest extends TestCase
     {
         return $this->markTestSkipped( 'Update to earlier versions seems not to be supported by pecl/svn.' );
 
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
         $this->assertTrue(
             file_exists( $this->tempDir . '/file' ),
@@ -132,7 +134,7 @@ class CheckoutTest extends TestCase
 
     public function testCompareVersions()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertTrue(
@@ -150,7 +152,7 @@ class CheckoutTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
@@ -161,7 +163,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
@@ -209,7 +211,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
@@ -225,7 +227,7 @@ class CheckoutTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         try {
@@ -237,7 +239,7 @@ class CheckoutTest extends TestCase
 
     public function testIterateCheckoutContents()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $files = array();
@@ -260,7 +262,7 @@ class CheckoutTest extends TestCase
 
     public function testGetCheckout()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertSame(
@@ -276,7 +278,7 @@ class CheckoutTest extends TestCase
 
     public function testGetInvalid()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         try
@@ -290,23 +292,23 @@ class CheckoutTest extends TestCase
 
     public function testGetDirectory()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
             $repository->get( '/dir1' ),
-            new \vcsSvnExtDirectory( $this->tempDir, '/dir1' )
+            new Directory( $this->tempDir, '/dir1' )
         );
     }
 
     public function testGetFile()
     {
-        $repository = new \vcsSvnExtCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
             $repository->get( '/file' ),
-            new \vcsSvnExtFile( $this->tempDir, '/file' )
+            new File( $this->tempDir, '/file' )
         );
     }
 }

@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage SvnExtWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\SvnExt;
+
 /**
  * Resource implementation vor SVN Ext wrapper
  *
- * @package VCSWrapper
- * @subpackage SvnExtWrapper
  * @version $Revision$
  */
-abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vcsAuthored, vcsLogged, vcsDiffable
+abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAuthored, \vcsLogged, \vcsDiffable
 {
     /**
      * Current version of the given resource
@@ -50,7 +48,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
     protected function getResourceInfo()
     {
         if ( ( $this->currentVersion === null ) ||
-             ( ( $info = vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
+             ( ( $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
         {
             // Fecth for specified version, if set
             if ( $this->currentVersion !== null )
@@ -63,7 +61,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
             }
 
             $info = $info[0];
-            vcsCache::cache( $this->path, $this->currentVersion = (string) $info['last_changed_rev'], 'info', $info );
+            \vcsCache::cache( $this->path, $this->currentVersion = (string) $info['last_changed_rev'], 'info', $info );
         }
 
         return $info;
@@ -78,14 +76,14 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
      */
     protected function getResourceLog()
     {
-        if ( ( $log = vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
+        if ( ( $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
         {
             $svnLog = svn_log( $this->root . $this->path );
 
             $log = array();
             foreach ( $svnLog as $nr => $entry )
             {
-                $log[$entry['rev']] = new vcsLogEntry(
+                $log[$entry['rev']] = new \vcsLogEntry(
                     $entry['rev'],
                     $entry['author'],
                     $entry['msg'],
@@ -95,7 +93,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
             uksort( $log, array( $this, 'compareVersions' ) );
             $last = end( $log );
 
-            vcsCache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
+            \vcsCache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
         }
 
         return $log;
@@ -115,11 +113,11 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
         // checkout.
         return null;
 
-        if ( ( $value = vcsCache::get( $this->path, $this->currentVersion, $property ) ) === false )
+        if ( ( $value = \vcsCache::get( $this->path, $this->currentVersion, $property ) ) === false )
         {
             $rep   = svn_repos_open( $this->root );
             $value = svn_fs_node_prop( $rep, $this->path, 'svn:' . $property );
-            vcsCache::cache( $this->path, $this->currentVersion, $property, $value );
+            \vcsCache::cache( $this->path, $this->currentVersion, $property, $value );
         }
 
         return $value;
@@ -192,7 +190,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
 
         if ( !isset( $log[$version] ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version]->author;
@@ -202,7 +200,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
      * Get full revision log
      *
      * Return the full revision log for the given resource. The revision log
-     * should be returned as an array of vcsLogEntry objects.
+     * should be returned as an array of \vcsLogEntry objects.
      *
      * @return array
      */
@@ -217,7 +215,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
      * Get the revision log entry for the spcified version.
      * 
      * @param string $version
-     * @return vcsLogEntry
+     * @return \vcsLogEntry
      */
     public function getLogEntry( $version )
     {
@@ -225,7 +223,7 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
 
         if ( !isset( $log[$version] ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version];
@@ -240,13 +238,13 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
      *
      * @param string $version 
      * @param string $current 
-     * @return vcsResource
+     * @return \vcsResource
      */
     public function getDiff( $version, $current = null )
     {
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = vcsCache::get( $this->path, $version, 'diff' ) ) === false )
+        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) === false )
         {
             list( $diffStream, $errors ) = svn_diff( $this->root . $this->path, $version, $this->root . $this->path, $current );
             $diffContents = '';
@@ -257,9 +255,9 @@ abstract class vcsSvnExtResource extends vcsResource implements vcsVersioned, vc
             fclose( $diffStream );
 
             // Execute command
-            $parser = new vcsUnifiedDiffParser();
+            $parser = new \vcsUnifiedDiffParser();
             $diff   = $parser->parseString( $diffContents );
-            vcsCache::cache( $this->path, $version, 'diff', $diff );
+            \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }
 
         foreach ( $diff as $fileDiff )
