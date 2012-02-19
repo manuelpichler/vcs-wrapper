@@ -36,13 +36,13 @@ class CheckoutTest extends TestCase
      */
     public function testInitializeInvalidCheckout()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file:///hopefully/not/existing/svn/repo' );
     }
 
     public function testInitializeCheckout()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertTrue(
@@ -53,7 +53,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckout()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertFalse( $repository->update(), "Repository should already be on latest revision." );
@@ -70,17 +70,17 @@ class CheckoutTest extends TestCase
         $repDir = $this->extractRepository( 'svn' );
 
         // Create two repositories one for the checkin one for the test checkout
-        $checkin = new \vcsSvnCliCheckout( $this->tempDir . '/ci' );
+        $checkin = new Checkout( $this->tempDir . '/ci' );
         $checkin->initialize( 'file://' . $repDir );
 
-        $checkout = new \vcsSvnCliCheckout( $this->tempDir . '/co' );
+        $checkout = new Checkout( $this->tempDir . '/co' );
         $checkout->initialize( 'file://' . $repDir );
 
         // Manually execute update in repository
         file_put_contents( $file = $this->tempDir . '/ci/another', 'Some test contents' );
-        $svn = new \vcsSvnCliProcess();
+        $svn = new Process();
         $svn->argument( 'add' )->argument( $file )->execute();
-        $svn = new \vcsSvnCliProcess();
+        $svn = new Process();
         $svn->argument( 'commit' )->argument( $file )->argument( '-m' )->argument( '- Test commit.' )->execute();
 
         $this->assertTrue( $checkin->update(), "Repository should have had an update available." );
@@ -92,7 +92,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertSame(
@@ -103,7 +103,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertSame(
@@ -114,7 +114,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckoutToOldVersion()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
         $this->assertTrue(
             file_exists( $this->tempDir . '/file' ),
@@ -131,7 +131,7 @@ class CheckoutTest extends TestCase
 
     public function testCompareVersions()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertTrue(
@@ -149,7 +149,7 @@ class CheckoutTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
@@ -160,7 +160,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
@@ -208,7 +208,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
@@ -224,7 +224,7 @@ class CheckoutTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         try {
@@ -236,7 +236,7 @@ class CheckoutTest extends TestCase
 
     public function testIterateCheckoutContents()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $files = array();
@@ -259,7 +259,7 @@ class CheckoutTest extends TestCase
 
     public function testGetCheckout()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertSame(
@@ -275,7 +275,7 @@ class CheckoutTest extends TestCase
 
     public function testGetInvalid()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         try
@@ -289,23 +289,23 @@ class CheckoutTest extends TestCase
 
     public function testGetDirectory()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
             $repository->get( '/dir1' ),
-            new \vcsSvnCliDirectory( $this->tempDir, '/dir1' )
+            new Directory( $this->tempDir, '/dir1' )
         );
     }
 
     public function testGetFile()
     {
-        $repository = new \vcsSvnCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
             $repository->get( '/file' ),
-            new \vcsSvnCliFile( $this->tempDir, '/file' )
+            new File( $this->tempDir, '/file' )
         );
     }
 }

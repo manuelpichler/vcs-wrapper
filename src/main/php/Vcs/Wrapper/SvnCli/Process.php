@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage SvnCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\SvnCli;
+
 /**
  * Svn executable wrapper for system process class
  *
- * @package VCSWrapper
- * @subpackage SvnCliWrapper
  * @version $Revision$
  */
-class vcsSvnCliProcess extends pbsSystemProcess
+class Process extends \pbsSystemProcess
 {
     /**
      * Class constructor taking the executable
