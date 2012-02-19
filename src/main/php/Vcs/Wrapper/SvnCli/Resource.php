@@ -31,6 +31,7 @@ use \Vcs\Logged;
 use \Vcs\Versioned;
 use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * Resource implementation vor SVN Cli wrapper
@@ -104,7 +105,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             }
 
             // Execute info command
-            $process->argument( 'info' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'info' )->argument( new PathArgument( $this->root . $this->path ) )->execute();
 
             $info = simplexml_load_string( $process->stdoutOutput );
             $info = array(
@@ -139,7 +140,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             }
 
             // Execute logr command
-            $process->argument( 'log' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'log' )->argument( new PathArgument( $this->root . $this->path ) )->execute();
 
             // Transform XML into object array
             $xmlLog = simplexml_load_string( $process->stdoutOutput );
@@ -185,7 +186,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             }
 
             // Execute mimeTyper command
-            $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new PathArgument( $this->root . $this->path ) )->execute();
 
             $value = trim( $process->stdoutOutput );
             Cache::cache( $this->path, $this->currentVersion, $property, $value );
@@ -332,7 +333,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             $process->argument( '-r' . $version . ':' . $current );
 
             // Execute command
-            $return = $process->argument( 'diff' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'diff' )->argument( new PathArgument( $this->root . $this->path ) )->execute();
             $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
             Cache::cache( $this->path, $version, 'diff', $diff );

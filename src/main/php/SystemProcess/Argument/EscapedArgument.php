@@ -20,6 +20,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace SystemProcess\Argument;
+
+use \SystemProcess\Argument;
+
 /**
  * Escaped argument
  *
@@ -30,7 +34,7 @@
  * @author Kore Nordmann <kore@php.net>
  * @license LGPLv3
  */
-class pbsEscapedArgument extends pbsArgument 
+class EscapedArgument extends Argument
 {
     /**
      * Get prepared argument value

@@ -31,6 +31,7 @@ use \Vcs\Logged;
 use \Vcs\Versioned;
 use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * Resource implementation vor Git Cli wrapper
@@ -99,7 +100,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             }
 
             // Execute log command
-            $process->argument( 'log' )->argument( '--pretty=format:%H;%cn;%ct;%s%n%b' )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( 'log' )->argument( '--pretty=format:%H;%cn;%ct;%s%n%b' )->argument( new PathArgument( '.' . $this->path ) )->execute();
 
             // Parse commit log
             $lines      = preg_split( '(\r\n|\r|\n)', $process->stdoutOutput );
@@ -150,7 +151,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             }
 
             // Execute mimeTyper command
-            $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new PathArgument( $this->root . $this->path ) )->execute();
 
             $value = trim( $process->stdoutOutput );
             Cache::cache( $this->path, $this->currentVersion, $property, $value );
@@ -299,7 +300,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
             $process = new Process();
             $process->workingDirectory( $this->root );
             $process->argument( 'diff' )->argument( '--no-ext-diff' );
-            $process->argument( $version . '..' . $current )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( $version . '..' . $current )->argument( new PathArgument( '.' . $this->path ) )->execute();
 
             // Parse resulting unified diff
             $parser = new UnifiedParser();

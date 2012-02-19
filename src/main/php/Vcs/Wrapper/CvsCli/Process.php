@@ -23,12 +23,14 @@
 
 namespace Vcs\Wrapper\CvsCli;
 
+use \SystemProcess\SystemProcess;
+
 /**
  * This is a CVS executable wrapper for the system process class.
  *
  * @version $Revision$
  */
-class Process extends \pbsSystemProcess
+class Process extends SystemProcess
 {
     /**
      * Class constructor taking the executable

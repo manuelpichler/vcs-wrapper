@@ -52,8 +52,8 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
      * Tests if the binary/tool for $name exists on the current system.
      *
      * @param string $name
-     *
      * @return boolean
+     * @todo Windows binary check
      */
     protected function hasBinary( $name )
     {
@@ -71,11 +71,11 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     protected function createTempDir()
     {
         do {
-            $path = dirname( __FILE__ ) . '/tmp/cache_' . substr( md5( microtime() ), 0, 8 );
+            $path = __DIR__ . '/../../../../target/tmp/cache_' . substr( md5( microtime() ), 0, 8 );
         } while ( is_dir( $path ) || file_exists( $path ) );
 
         mkdir( $this->directories[] = $path, 0777, true );
-        return $path;
+        return realpath( $path );
     }
 
     /**
@@ -201,11 +201,17 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
      */
     protected function extractRepository( $vcs )
     {
+        $directory = __DIR__ . '/../../../../target/repository';
+        if ( false === file_exists( $directory ) )
+        {
+            mkdir( $directory, 0755, true );
+        }
+
         $zip = new ZipArchive();
         $zip->open( $this->getRepositoryArchive( $vcs ) );
-        $zip->extractTo( realpath( __DIR__ . '/../data' ) );
+        $zip->extractTo( $directory );
 
-        $this->extractedRepository = realpath( __DIR__ . "/../data/{$vcs}" );
+        $this->extractedRepository = realpath( "{$directory}/{$vcs}" );
 
         return $this->extractedRepository;
     }

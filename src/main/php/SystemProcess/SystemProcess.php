@@ -20,6 +20,13 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace SystemProcess;
+
+use SystemProcess\Argument;
+use SystemProcess\Argument\EscapedArgument;
+use SystemProcess\Argument\UnescapedArgument;
+use \SystemProcess\InvalidCustomDescriptorException;
+
 /**
  * Management facility for any external system process.
  *
@@ -36,7 +43,7 @@
  * "bar":
  * <code>
  * <?php
- * $p = new pbsSystemProcess( 'echo' );
+ * $p = new SystemProcess( 'echo' );
  * $p->argument( 'foo' )->argument( 'bar' );
  * $returnCode = $p->execute();
  * ?>
@@ -49,10 +56,10 @@
  * effort.
  * <code>
  * <?php
- * $consumer  = new pbsSystemProcess( 'cat' );
- * $consumer->redirect( pbsSystemProcess::STDOUT, pbsSystemProcess::STDERR );
+ * $consumer  = new SystemProcess( 'cat' );
+ * $consumer->redirect( SystemProcess::STDOUT, SystemProcess::STDERR );
  *
- * $provider  = new pbsSystemProcess( 'echo' );
+ * $provider  = new SystemProcess( 'echo' );
  * $provider->nonZeroExitCodeException = true;
  * $provider->argument( 'foobar' )
  *          ->pipe( $consumer )
@@ -77,7 +84,7 @@
  * context like printf.
  * <code>
  * <?php
- * $p = new pbsSystemProcess( 'echo' );
+ * $p = new SystemProcess( 'echo' );
  * $p->argument( 'foo' )
  *   ->argument( 'bar' )
  *
@@ -97,7 +104,7 @@
  * @author Jakob Westhoff <jakob@php.net> 
  * @license LGPLv3
  */
-class pbsSystemProcess 
+class SystemProcess
 {
     /*
      * Types of command parts
@@ -282,28 +289,28 @@ class pbsSystemProcess
     /**
      * Add an argument to the system process
      *
-     * Accepts pbsArgument objects, or any scalar, which is then wrapped into 
-     * an argument object for BC.
+     * Accepts {@link \SystemProcess\Argument} objects, or any scalar, which is
+     * then wrapped into an argument object for BC.
      * 
      * @param mixed $argument Argument to add to the commandline
      * @param bool $alreadyEscaped The given argument will not be escaped. If
      * you decide to pass true here, you need to make sure the argument
      * supplied is not harmful and treated as one argument. Therfore you may
      * need to enclose it in single or double quotes.
-     * @return pbsSystemProcess The object this method was called on (fluent
+     * @return \SystemProcess\SystemProcess The object this method was called on (fluent
      * interface)
      */
     public function argument( $argument, $alreadyEscaped = false ) 
     {
-        if ( !$argument instanceof pbsArgument )
+        if ( !$argument instanceof Argument )
         {
             if ( $alreadyEscaped )
             {
-                $argument = new pbsUnescapedArgument( $argument );
+                $argument = new UnescapedArgument( $argument );
             }
             else
             {
-                $argument = new pbsEscapedArgument( $argument );
+                $argument = new EscapedArgument( $argument );
             }
         }
 
@@ -314,15 +321,15 @@ class pbsSystemProcess
     /**
      * Pipe the output of the executed command to another system process
      * 
-     * @param pbsSystemProcess $process Process to pipe the output to
-     * @return pbsSystemProcess The object this method was called on (fluent
+     * @param \SystemProcess\SystemProcess $process Process to pipe the output to
+     * @return \SystemProcess\SystemProcess The object this method was called on (fluent
      * interface)
      */
-    public function pipe( pbsSystemProcess $process ) 
+    public function pipe( SystemProcess $process )
     {
         if ( $process === $this ) 
         {
-            throw new pbsSystemProcessRecursivePipeException();
+            throw new RecursivePipeException();
         }
         $this->commandParts[] = array( self::SYSTEMPROCESS, &$process->commandParts );
         return $this;
@@ -335,8 +342,8 @@ class pbsSystemProcess
      * STDOUT or STDERR) 
      * @param mixed $target The target to redirect the given stream to. This
      * may be a filename or a another stream
-     * @return pbsSystemProcess The object this method was called on (fluent
-     * interface)
+     * @return \SystemProcess\SystemProcess The object this method was called on
+     * (fluent interface)
      */
     public function redirect( $stream, $target )
     {
@@ -357,8 +364,8 @@ class pbsSystemProcess
      * @param array $env The environment to be used defined as associative
      * array. The array key is the variable name and the value is the
      * corresponding value for this variable.
-     * @return pbsSystemProcess The object this method was called on (fluent
-     * interface)
+     * @return \SystemProcess\SystemProcess The object this method was called on
+     * (fluent interface)
      */
     public function environment( $env ) 
     {
@@ -377,8 +384,8 @@ class pbsSystemProcess
      * be used.
      * 
      * @param string $cwd Working directory to be set
-     * @return pbsSystemProcess The object this method was called on (fluent
-     * interface)
+     * @return \SystemProcess\SystemProcess The object this method was called on
+     * (fluent interface)
      */
     public function workingDirectory( $cwd ) 
     {
@@ -405,14 +412,14 @@ class pbsSystemProcess
      * reading from the pipe
      * @param string filemode If the type is FILE this is the mode to open the
      * file with, e.g. "a"
-     * @return pbsSystemProcess The object this method was called on (fluent
-     * interface)
+     * @return \SystemProcess\SystemProcess The object this method was called on
+     * (fluent interface)
      */
     public function descriptor( $fd, $type, $target, $filemode = null ) 
     {
         if ( $fd < 3 ) 
         {
-            throw new pbsSystemProcessInvalidCustomDescriptorException( $fd );
+            throw new InvalidCustomDescriptorException( $fd );
         }
         if ( $filemode === null ) 
         {
@@ -527,7 +534,7 @@ class pbsSystemProcess
 
         if ( $retVal !== 0 && $this->attributes['nonZeroExitCodeException'] === true ) 
         {
-            throw new pbsSystemProcessNonZeroExitCodeException( 
+            throw new NonZeroExitCodeException(
                 $retVal, 
                 $this->attributes['stdoutOutput'], 
                 $this->attributes['stderrOutput'],
@@ -548,7 +555,7 @@ class pbsSystemProcess
     {
         if ( $this->processHandle === null ) 
         {
-            throw new pbsSystemProcessNotRunningException();
+            throw new NotRunningException();
         }
 
         // Close all pipes
@@ -577,7 +584,7 @@ class pbsSystemProcess
     {
         if ( $this->processHandle === null ) 
         {
-            throw new pbsSystemProcessNotRunningException();
+            throw new NotRunningException();
         }
         proc_terminate( $this->processHandle, $signal );
     }

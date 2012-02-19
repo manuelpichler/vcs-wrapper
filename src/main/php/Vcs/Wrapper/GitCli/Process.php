@@ -23,12 +23,14 @@
 
 namespace Vcs\Wrapper\GitCli;
 
+use \SystemProcess\SystemProcess;
+
 /**
  * Git executable wrapper for system process class
  *
  * @version $Revision$
  */
-class Process extends \pbsSystemProcess
+class Process extends SystemProcess
 {
     /**
      * Static property containg information, if the version of the git CLI
@@ -42,7 +44,6 @@ class Process extends \pbsSystemProcess
      * Class constructor taking the executable
      * 
      * @param string $executable Executable to create system process for;
-     * @return void
      */
     public function __construct( $executable = 'git' )
     {
@@ -68,7 +69,7 @@ class Process extends \pbsSystemProcess
             return true;
         }
 
-        $process = new \pbsSystemProcess( 'git' );
+        $process = new SystemProcess( 'git' );
         $process->nonZeroExitCodeException = true;
         $process->argument( '--version' )->execute();
 

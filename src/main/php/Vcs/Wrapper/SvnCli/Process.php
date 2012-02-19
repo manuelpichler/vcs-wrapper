@@ -23,20 +23,21 @@
 
 namespace Vcs\Wrapper\SvnCli;
 
+use \SystemProcess\SystemProcess;
+
 /**
  * Svn executable wrapper for system process class
  *
  * @version $Revision$
  */
-class Process extends \pbsSystemProcess
+class Process extends SystemProcess
 {
     /**
      * Class constructor taking the executable
      * 
      * @param string $executable 
      * @param string $user 
-     * @param string $password 
-     * @return void
+     * @param string $password
      */
     public function __construct( $executable = 'svn', $user = null, $password = null )
     {

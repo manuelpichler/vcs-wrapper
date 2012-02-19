@@ -17,8 +17,6 @@
  * along with \vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage BzrCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
@@ -27,12 +25,11 @@ namespace Vcs\Wrapper\BzrCli;
 
 use \Vcs\CheckoutFailedException;
 use \Vcs\FileNotFoundException;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * Handler for Bzr repositories
  *
- * @package VCSWrapper
- * @subpackage BzrCliWrapper
  * @version $Revision$
  */
 class Checkout extends Directory implements \Vcs\Checkout
@@ -85,7 +82,7 @@ class Checkout extends Directory implements \Vcs\Checkout
         $process->nonZeroExitCodeException = true;
         $process->argument( 'checkout' );
         $process->argument( str_replace( '\\', '/', $url ) );
-        $process->argument( new \pbsPathArgument( $this->root ) );
+        $process->argument( new PathArgument( $this->root ) );
         $return = $process->execute();
 
         // Cache basic revision information for checkout and update

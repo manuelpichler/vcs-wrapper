@@ -20,6 +20,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace SystemProcess\Argument;
+
 /**
  * Path argument
  *
@@ -29,7 +31,7 @@
  * @author Kore Nordmann <kore@php.net>
  * @license LGPLv3
  */
-class pbsPathArgument extends pbsEscapedArgument 
+class PathArgument extends EscapedArgument
 {
     /**
      * Get prepared argument value

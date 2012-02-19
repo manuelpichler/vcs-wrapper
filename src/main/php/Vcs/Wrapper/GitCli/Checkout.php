@@ -25,6 +25,8 @@ namespace Vcs\Wrapper\GitCli;
 
 use \Vcs\CheckoutFailedException;
 use \Vcs\FileNotFoundException;
+use \SystemProcess\Argument\PathArgument;
+use \SystemProcess\NonZeroExitCodeException;
 
 /**
  * Handler for Git repositories
@@ -70,14 +72,14 @@ class Checkout extends Directory implements \Vcs\Checkout
         }
 
         $process = new Process();
-        $return = $process->argument( 'clone' )->argument( $url )->argument( new \pbsPathArgument( $this->root ) )->execute();
+        $process->argument( 'clone' )->argument( $url )->argument( new PathArgument( $this->root ) )->execute();
 
         // On windows GIT does not exit with a non-zero exit code on false 
         // checkouts, so we need to handle this ourselves
         if ( ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' ) &&
              ( strpos( $process->stderrOutput, 'fatal' ) !== false ) )
         {
-            throw new \pbsSystemProcessNonZeroExitCodeException(
+            throw new NonZeroExitCodeException(
                 128,
                 $process->stdoutOutput,
                 $process->stderrOutput,

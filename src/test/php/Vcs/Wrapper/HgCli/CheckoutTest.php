@@ -35,7 +35,7 @@ class CheckoutTest extends TestCase
 
     /**
      * @return void
-     * @expectedException \pbsSystemProcessNonZeroExitCodeException
+     * @expectedException \SystemProcess\NonZeroExitCodeException
      */
     public function testInitializeInvalidCheckout()
     {

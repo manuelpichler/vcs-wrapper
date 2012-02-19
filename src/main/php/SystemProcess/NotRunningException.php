@@ -1,6 +1,8 @@
 <?php
 
-class pbsSystemProcessNotRunningException extends Exception 
+namespace SystemProcess;
+
+class NotRunningException extends \Exception
 {
     public function __construct() 
     {

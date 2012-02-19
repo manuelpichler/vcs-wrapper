@@ -31,6 +31,7 @@ use \Vcs\Logged;
 use \Vcs\Versioned;
 use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * Resource implementation vor Bzr Cli wrapper
@@ -98,7 +99,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
                 $process->argument( '-r ' . $this->currentVersion );
             }
 
-            $process->argument( new \pbsPathArgument( '.' . $this->path ) );
+            $process->argument( new PathArgument( '.' . $this->path ) );
             
             $process->execute();
 
@@ -271,7 +272,7 @@ abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Lo
                 $process->argument( "-r" . $version );
             }
 
-            $process->argument( new \pbsPathArgument( '.' . $this->path ) );
+            $process->argument( new PathArgument( '.' . $this->path ) );
             $process->execute();
 
             // Parse resulting unified diff
