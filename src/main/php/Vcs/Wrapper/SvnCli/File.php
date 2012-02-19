@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage SvnCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\SvnCli;
+
 /**
  * File implementation vor SVN Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage SvnCliWrapper
  * @version $Revision$
  */
-class vcsSvnCliFile extends vcsSvnCliResource implements vcsFile, vcsBlameable, vcsFetchable
+class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
 {
     /**
      * Get file contents
@@ -97,18 +95,18 @@ class vcsSvnCliFile extends vcsSvnCliResource implements vcsFile, vcsBlameable, 
 
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $blame = vcsCache::get( $this->path, $version, 'blame' ) ) === false )
+        if ( ( $blame = \vcsCache::get( $this->path, $version, 'blame' ) ) === false )
         {
             // Refetch the basic blamermation, and cache it.
-            $process = new vcsSvnCliProcess( 'svn', $this->username, $this->password );
+            $process = new Process( 'svn', $this->username, $this->password );
             $process->argument( '--xml' );
 
             // Execute command
-            $return = $process->argument( 'blame' )->argument( new pbsPathArgument( $this->root . $this->path ) )->execute();
-            $xml = arbitXml::loadString( $process->stdoutOutput );
+            $return = $process->argument( 'blame' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $xml = \arbitXml::loadString( $process->stdoutOutput );
 
             // Check if blame information si available. Is absent fro binary
             // files.
@@ -121,7 +119,7 @@ class vcsSvnCliFile extends vcsSvnCliResource implements vcsFile, vcsBlameable, 
             $contents = preg_split( '(\r\n|\r|\n)', $this->getVersionedContent( $version ) );
             foreach ( $xml->target[0]->entry as $nr => $entry )
             {
-                $blame[] = new vcsBlameStruct(
+                $blame[] = new \vcsBlameStruct(
                     $contents[$nr],
                     $entry->commit[0]['revision'],
                     $entry->commit[0]->author,
@@ -129,7 +127,7 @@ class vcsSvnCliFile extends vcsSvnCliResource implements vcsFile, vcsBlameable, 
                 );
             }
 
-            vcsCache::cache( $this->path, $version, 'blame', $blame );
+            \vcsCache::cache( $this->path, $version, 'blame', $blame );
         }
 
         return $blame;
@@ -147,18 +145,18 @@ class vcsSvnCliFile extends vcsSvnCliResource implements vcsFile, vcsBlameable, 
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $content = vcsCache::get( $this->path, $version, 'content' ) ) === false )
+        if ( ( $content = \vcsCache::get( $this->path, $version, 'content' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
-            $process = new vcsSvnCliProcess( 'svn', $this->username, $this->password );
+            $process = new Process( 'svn', $this->username, $this->password );
             $process->argument( '-r' . $version );
 
             // Execute command
-            $return = $process->argument( 'cat' )->argument( new pbsPathArgument( $this->root . $this->path ) )->execute();
-            vcsCache::cache( $this->path, $version, 'content', $content = $process->stdoutOutput );
+            $return = $process->argument( 'cat' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            \vcsCache::cache( $this->path, $version, 'content', $content = $process->stdoutOutput );
         }
 
         return $content;
