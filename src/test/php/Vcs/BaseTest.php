@@ -49,6 +49,18 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests if the binary/tool for $name exists on the current system.
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    protected function hasBinary( $name )
+    {
+        return strlen( shell_exec( 'which ' . escapeshellarg( $name ) ) ) > 0;
+    }
+
+    /**
      * Create a temporary directory
      *
      * Create a temporary writeable directory, which will be removed again at
@@ -190,12 +202,24 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     protected function extractRepository( $vcs )
     {
         $zip = new ZipArchive();
-        $zip->open( __DIR__ . "/../../resources/repositories/{$vcs}.zip" );
+        $zip->open( $this->getRepositoryArchive( $vcs ) );
         $zip->extractTo( realpath( __DIR__ . '/../data' ) );
 
         $this->extractedRepository = realpath( __DIR__ . "/../data/{$vcs}" );
 
         return $this->extractedRepository;
+    }
+
+    /**
+     * Returns the physical location for the repository archive for the given
+     * vcs driver.
+     *
+     * @param string $vcs
+     * @return string
+     */
+    protected function getRepositoryArchive( $vcs )
+    {
+        return realpath( __DIR__ . "/../../resources/repositories/{$vcs}.zip" );
     }
 
     /**
