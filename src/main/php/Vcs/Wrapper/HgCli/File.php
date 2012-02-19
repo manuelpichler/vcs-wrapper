@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\HgCli;
 
+use \Vcs\Diff\Parser\UnifiedParser;
+
 /**
  * File implementation vor Mercurial Cli wrapper
  *
@@ -214,7 +216,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
             $process->execute();
 
             // Parse resulting unified diff
-            $parser = new \vcsUnifiedDiffParser();
+            $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
             \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }

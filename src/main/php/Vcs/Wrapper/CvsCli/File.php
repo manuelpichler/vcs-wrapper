@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\CvsCli;
 
+use \Vcs\Diff\Parser\UnifiedParser;
+
 /**
  * File implementation vor CVS Cli wrapper
  *
@@ -211,7 +213,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
             ->argument( '.' . $this->path )
             ->execute();
 
-        $parser = new \vcsUnifiedDiffParser();
+        $parser = new UnifiedParser();
         $diff   = $parser->parseString( $process->stdoutOutput );
         \vcsCache::cache( $this->path, $version, 'diff', $diff );
 

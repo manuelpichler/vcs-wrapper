@@ -17,29 +17,33 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Diff\Parser;
+
+use \Vcs\Diff\Parser;
+use \Vcs\Diff\Chunk;
+use \Vcs\Diff\Diff;
+use \Vcs\Diff\Line;
+
 /**
  * Parser for unified diffs
  *
- * @package VCSWrapper
  * @subpackage Diff
  * @version $Revision$
  */
-class vcsUnifiedDiffParser extends vcsDiffParser
+class UnifiedParser extends Parser
 {
     /**
      * Parse diff string
      *
-     * Parse the diff, given as a string, into a vcsDiff objects. The different
-     * diff objects are returned in an array.
+     * Parse the diff, given as a string, into a {@link \Vcs\Diff\Diff} objects.
+     * The different diff objects are returned in an array.
      *
      * @param string $string 
-     * @return array(vcsDiff)
+     * @return \Vcs\Diff\Diff[]
      */
     public function parseString( $string )
     {
@@ -63,7 +67,7 @@ class vcsUnifiedDiffParser extends vcsDiffParser
                     $collected = array();
                 }
 
-                $diff = new vcsDiff( $fromMatch['file'], $toMatch['file'] );
+                $diff = new Diff( $fromMatch['file'], $toMatch['file'] );
                 ++$i;
             }
             else
@@ -91,11 +95,11 @@ class vcsUnifiedDiffParser extends vcsDiffParser
      * Parse the unified diff for one file, which may consists of a finitie
      * amount of diff chunks.
      *
-     * @param vcsDiff $diff 
+     * @param \Vcs\Diff\Diff $diff
      * @param array $lines 
      * @return void
      */
-    protected function parseFileDiff( vcsDiff $diff, array $lines )
+    protected function parseFileDiff( Diff $diff, array $lines )
     {
         $chunks = array();
         while ( count( $lines ) )
@@ -110,7 +114,7 @@ class vcsUnifiedDiffParser extends vcsDiffParser
                 }
             }
 
-            $chunk = new vcsDiffChunk(
+            $chunk = new Chunk(
                 $match['start'],
                 ( isset( $match['startrange'] ) ? max( 1, $match['startrange'] ) : 1 ),
                 $match['end'],
@@ -127,9 +131,9 @@ class vcsUnifiedDiffParser extends vcsDiffParser
                 // We ignore the missing newlines for now
                 if ( count( $match ) )
                 {
-                    $diffLines[] = new vcsDiffLine(
-                        ( $match['type'] === '+' ? vcsDiffLine::ADDED :
-                            ( $match['type'] === '-' ? vcsDiffLine::REMOVED : vcsDiffLine::UNCHANGED ) ),
+                    $diffLines[] = new Line(
+                        ( $match['type'] === '+' ? Line::ADDED :
+                            ( $match['type'] === '-' ? Line::REMOVED : Line::UNCHANGED ) ),
                         $match['line']
                     );
                 }

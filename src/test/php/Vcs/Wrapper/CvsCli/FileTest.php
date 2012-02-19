@@ -10,6 +10,9 @@ namespace Vcs\Wrapper\CvsCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Diff\Chunk;
+use \Vcs\Diff\Line;
+
 /**
  * Tests for the CVS Cli wrapper
  */
@@ -259,12 +262,12 @@ class FileTest extends TestCase
 
         $this->assertEquals(
             array(
-                new \vcsDiffChunk(
+                new Chunk(
                     1, 1, 1, 3,
                     array(
-                        new \vcsDiffLine( 3, 'Some test contents' ),
-                        new \vcsDiffLine( 1, 'More test contents' ),
-                        new \vcsDiffLine( 1, 'And another test line' ),
+                        new Line( 3, 'Some test contents' ),
+                        new Line( 1, 'More test contents' ),
+                        new Line( 1, 'And another test line' ),
                     )
                 ),
             ),

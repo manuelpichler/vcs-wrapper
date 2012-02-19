@@ -10,6 +10,9 @@ namespace Vcs\Wrapper\BzrCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Diff\Chunk;
+use \Vcs\Diff\Line;
+
 /**
  * @group bazaar
  * Tests for the SQLite cache meta data handler
@@ -241,12 +244,12 @@ class FileTest extends TestCase
         
         $this->assertEquals(
             array(
-                new \vcsDiffChunk(
+                new Chunk(
                     1, 2, 1, 3,
                     array(
-                        new \vcsDiffLine( 3, 'Some test file' ),
-                        new \vcsDiffLine( 3, "Another line in the file" ),
-                        new \vcsDiffLine( 1, 'Added a new line' ),
+                        new Line( 3, 'Some test file' ),
+                        new Line( 3, "Another line in the file" ),
+                        new Line( 1, 'Added a new line' ),
                     )
                 ),
             ),

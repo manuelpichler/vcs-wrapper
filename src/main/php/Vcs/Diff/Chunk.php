@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Diff;
+
 /**
  * Basic struct containing a diff chunk
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  */
-class vcsDiffChunk extends vcsBaseStruct
+class Chunk extends \vcsBaseStruct
 {
     /**
      * Array containing the structs properties.
@@ -52,8 +50,7 @@ class vcsDiffChunk extends vcsBaseStruct
      * @param int $startRange 
      * @param int $end 
      * @param int $endRange 
-     * @param array $lines 
-     * @return void
+     * @param array $lines
      */
     public function __construct( $start = null, $startRange = 1, $end = null, $endRange = 1, array $lines = array() )
     {
@@ -66,17 +63,15 @@ class vcsDiffChunk extends vcsBaseStruct
 
     /**
      * Recreate struct exported by var_export()
-     *
-     * Recreate struct exported by var_export()
      * 
      * @ignore
      * @param array $properties 
      * @param string $class 
-     * @return vcsDiffChunk
+     * @return \Vcs\Diff\Chunk
      */
     public static function __set_state( array $properties, $class = __CLASS__ )
     {
-        return vcsBaseStruct::__set_state( $properties, $class );
+        return \vcsBaseStruct::__set_state( $properties, $class );
     }
 }
 

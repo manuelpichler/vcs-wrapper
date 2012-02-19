@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Diff;
+
 /**
  * Abstract base class for diff parsers
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  */
-abstract class vcsDiffParser
+abstract class Parser
 {
     /**
      * Parse diff string
@@ -39,7 +37,7 @@ abstract class vcsDiffParser
      * diff objects are returned in an array.
      *
      * @param string $string 
-     * @return array(vcsDiff)
+     * @return \Vcs\Diff\Diff[]
      */
     abstract public function parseString( $string );
 
@@ -50,7 +48,7 @@ abstract class vcsDiffParser
      * different diff objects are returned in an array.
      *
      * @param string $file 
-     * @return array(vcsDiff)
+     * @return \Vcs\Diff\Diff[]
      */
     public function parseFile( $file )
     {

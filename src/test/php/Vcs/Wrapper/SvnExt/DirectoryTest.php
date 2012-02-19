@@ -11,6 +11,9 @@ namespace Vcs\Wrapper\SvnExt;
 use Vcs\TestCase;
 use \RecursiveIteratorIterator;
 
+use \Vcs\Diff\Chunk;
+use \Vcs\Diff\Line;
+
 /**
  * Tests for the SQLite cache meta data handler
  */
@@ -121,10 +124,10 @@ class DirectoryTest extends TestCase
         );
         $this->assertEquals(
             array(
-                new \vcsDiffChunk(
+                new Chunk(
                     0, 1, 1, 1,
                     array(
-                        new \vcsDiffLine( 1, 'Some test contents' ),
+                        new Line( 1, 'Some test contents' ),
                     )
                 ),
             ),

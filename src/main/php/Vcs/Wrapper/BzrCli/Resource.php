@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\BzrCli;
 
+use \Vcs\Diff\Parser\UnifiedParser;
+
 /**
  * Resource implementation vor Bzr Cli wrapper
  *
@@ -266,7 +268,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             $process->execute();
 
             // Parse resulting unified diff
-            $parser = new \vcsUnifiedDiffParser();
+            $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
             \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }

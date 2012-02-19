@@ -6,19 +6,19 @@
  * @license GPLv3
  */
 
-namespace Vcs\Diff;
+namespace Vcs\Diff\Parser;
 
 use \Vcs\TestCase;
 
 /**
  * Tests for the unified diff parser
  */
-class UnifiedDiffParserTest extends TestCase
+class UnifiedParserTest extends TestCase
 {
     public static function getUnifiedDiffFiles()
     {
         $diffs = array();
-        $files = glob( __DIR__ . '/../../../resources/diff/unified/s_*.diff' );
+        $files = glob( __DIR__ . '/../../../../resources/diff/unified/s_*.diff' );
         foreach ( $files as $file )
         {
             $diffs[] = array(
@@ -40,7 +40,7 @@ class UnifiedDiffParserTest extends TestCase
             $this->markTestIncomplete( "Comparision file $to does not yet exist." );
         }
 
-        $parser = new \vcsUnifiedDiffParser();
+        $parser = new UnifiedParser();
         $diff = $parser->parseFile( $from );
 
         // Store diff result in temp folder for manual check in case of failure

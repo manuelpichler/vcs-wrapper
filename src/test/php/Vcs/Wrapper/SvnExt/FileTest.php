@@ -10,6 +10,9 @@ namespace Vcs\Wrapper\SvnExt;
 
 use \Vcs\TestCase;
 
+use \Vcs\Diff\Chunk;
+use \Vcs\Diff\Line;
+
 /**
  * Tests for the SQLite cache meta data handler
  */
@@ -231,17 +234,17 @@ class FileTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \vcsNoSuchVersionException
+     */
     public function testGetFileBlameInvalidVersion()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
         $file = new File( $this->tempDir, '/file' );
 
-        try {
-            $file->blame( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $file->blame( "no_such_version" );
     }
 
     public function testGetFileDiff()
@@ -263,11 +266,11 @@ class FileTest extends TestCase
         );
         $this->assertEquals(
             array(
-                new \vcsDiffChunk(
+                new Chunk(
                     1, 1, 1, 2,
                     array(
-                        new \vcsDiffLine( 3, 'Some test file' ),
-                        new \vcsDiffLine( 1, 'A second line, in a later revision' ),
+                        new Line( 3, 'Some test file' ),
+                        new Line( 1, 'A second line, in a later revision' ),
                     )
                 ),
             ),
