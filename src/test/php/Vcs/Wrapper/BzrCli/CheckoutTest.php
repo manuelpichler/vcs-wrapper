@@ -36,13 +36,13 @@ class CheckoutTest extends TestCase
      */
     public function testInitializeInvalidCheckout()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file:///hopefully/not/existing/bzr/repo' );
     }
 
     public function testInitializeCheckout()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertTrue(
@@ -53,7 +53,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckout()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertFalse( $repository->update(), "Repository should already be on latest revision." );
@@ -70,19 +70,19 @@ class CheckoutTest extends TestCase
         self::copyRecursive( $this->extractRepository( 'bzr' ), $repDir );
 
         // Copy the repository to not change the test reference repository
-        $checkin = new \vcsBzrCliCheckout( $this->tempDir . '/ci' );
+        $checkin = new Checkout( $this->tempDir . '/ci' );
         $checkin->initialize( 'file://' . $repDir );
 
-        $checkout = new \vcsBzrCliCheckout( $this->tempDir . '/co' );
+        $checkout = new Checkout( $this->tempDir . '/co' );
         $checkout->initialize( 'file://' . $repDir );
 
         // Manually execute update in repository
         file_put_contents( $this->tempDir . '/ci/another', 'Some test contents' );
-        $bzr = new \vcsBzrCliProcess();
+        $bzr = new Process();
         $bzr->workingDirectory( $this->tempDir . '/ci' );
         $bzr->argument( 'add' )->argument( 'another' )->execute();
 
-        $bzr = new \vcsBzrCliProcess();
+        $bzr = new Process();
         $bzr->workingDirectory( $this->tempDir . '/ci' );
         $bzr->argument( 'commit' )->argument( 'another' )->argument( '-m' )->argument( 'Test commit.' )->execute();
 
@@ -95,7 +95,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertSame(
@@ -106,7 +106,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertSame(
@@ -122,7 +122,7 @@ class CheckoutTest extends TestCase
     {
 #        $this->markTestSkipped( 'Downgrade seems not to remove files from checkout.' );
 
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
         $this->assertTrue(
             file_exists( $this->tempDir . '/dir1/file' ),
@@ -139,7 +139,7 @@ class CheckoutTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertEquals(
@@ -150,7 +150,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertEquals(
@@ -168,7 +168,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertEquals(
@@ -181,7 +181,7 @@ class CheckoutTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         try {
@@ -193,7 +193,7 @@ class CheckoutTest extends TestCase
 
     public function testIterateCheckoutContents()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $files = array();
@@ -215,7 +215,7 @@ class CheckoutTest extends TestCase
 
     public function testGetCheckout()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertSame(
@@ -229,39 +229,36 @@ class CheckoutTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \vcsFileNotFoundException
+     */
     public function testGetInvalid()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-
-        try
-        {
-            $repository->get( '/../' );
-            $this->fail( 'Expected \vcsFileNotFoundException.' );
-        }
-        catch ( \vcsFileNotFoundException $e )
-        { /* Expected */ }
+        $repository->get( '/../' );
     }
 
     public function testGetDirectory()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertEquals(
             $repository->get( '/dir1' ),
-            new \vcsBzrCliDirectory( $this->tempDir, '/dir1' )
+            new Directory( $this->tempDir, '/dir1' )
         );
     }
 
     public function testGetFile()
     {
-        $repository = new \vcsBzrCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertEquals(
             $repository->get( '/file' ),
-            new \vcsBzrCliFile( $this->tempDir, '/file' )
+            new File( $this->tempDir, '/file' )
         );
     }
 }
