@@ -36,13 +36,13 @@ class CheckoutTest extends TestCase
      */
     public function testInitializeInvalidCheckout()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file:///hopefully/not/existing/hg/repo' );
     }
 
     public function testInitializeCheckout()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertTrue(
@@ -53,7 +53,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckout()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertFalse( $repository->update(), "Repository should already be on latest revision." );
@@ -70,23 +70,23 @@ class CheckoutTest extends TestCase
         self::copyRecursive( $this->extractRepository( 'hg' ), $repDir );
 
         // Copy the repository to not chnage the test reference repository
-        $checkin = new \vcsHgCliCheckout( $this->tempDir . '/ci' );
+        $checkin = new Checkout( $this->tempDir . '/ci' );
         $checkin->initialize( 'file://' . $repDir );
 
-        $checkout = new \vcsHgCliCheckout( $this->tempDir . '/co' );
+        $checkout = new Checkout( $this->tempDir . '/co' );
         $checkout->initialize( 'file://' . $repDir );
 
         // Manually execute update in repository
         file_put_contents( $this->tempDir . '/ci/another', 'Some test contents' );
-        $hg = new \vcsHgCliProcess();
+        $hg = new Process();
         $hg->workingDirectory( $this->tempDir . '/ci' );
         $hg->argument( 'add' )->argument( 'another' )->execute();
 
-        $hg = new \vcsHgCliProcess();
+        $hg = new Process();
         $hg->workingDirectory( $this->tempDir . '/ci' );
         $hg->argument( 'commit' )->argument( 'another' )->argument( '-m' )->argument( 'Test commit.' )->execute();
 
-        $hg = new \vcsHgCliProcess();
+        $hg = new Process();
         $hg->workingDirectory( $this->tempDir . '/ci' );
         $hg->argument( 'push' )->execute();
 
@@ -99,7 +99,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertSame(
@@ -110,7 +110,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertSame(
@@ -128,7 +128,7 @@ class CheckoutTest extends TestCase
     {
 #        $this->markTestSkipped( 'Downgrade seems not to remove files from checkout.' );
 
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
         $this->assertTrue(
             file_exists( $this->tempDir . '/dir1/file' ),
@@ -145,7 +145,7 @@ class CheckoutTest extends TestCase
 
     public function testCompareVersions()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertTrue(
@@ -163,7 +163,7 @@ class CheckoutTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertEquals(
@@ -174,7 +174,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertEquals(
@@ -198,7 +198,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertEquals(
@@ -211,7 +211,7 @@ class CheckoutTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         try {
@@ -223,7 +223,7 @@ class CheckoutTest extends TestCase
 
     public function testIterateCheckoutContents()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $files = array();
@@ -245,7 +245,7 @@ class CheckoutTest extends TestCase
 
     public function testGetCheckout()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertSame(
@@ -261,7 +261,7 @@ class CheckoutTest extends TestCase
 
     public function testGetInvalid()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         try
@@ -275,23 +275,23 @@ class CheckoutTest extends TestCase
 
     public function testGetDirectory()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertEquals(
             $repository->get( '/dir1' ),
-            new \vcsHgCliDirectory( $this->tempDir, '/dir1' )
+            new Directory( $this->tempDir, '/dir1' )
         );
     }
 
     public function testGetFile()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertEquals(
             $repository->get( '/file' ),
-            new \vcsHgCliFile( $this->tempDir, '/file' )
+            new File( $this->tempDir, '/file' )
         );
     }
 }

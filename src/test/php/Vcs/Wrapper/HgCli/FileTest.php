@@ -32,9 +32,9 @@ class FileTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             "b8ec741c8de1e60c5fedd98c350e3569c46ed630",
@@ -44,9 +44,9 @@ class FileTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             array(
@@ -59,9 +59,9 @@ class FileTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             't.tom',
@@ -71,9 +71,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorOldVersion()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             't.tom',
@@ -83,9 +83,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorInvalidVersion()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getAuthor( 'invalid' );
@@ -96,9 +96,9 @@ class FileTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -115,9 +115,9 @@ class FileTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             new \vcsLogEntry(
@@ -129,9 +129,9 @@ class FileTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getLogEntry( "no_such_version" );
@@ -142,9 +142,9 @@ class FileTest extends TestCase
 
     public function testGetFileContents()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "Some other test file\n",
@@ -154,9 +154,9 @@ class FileTest extends TestCase
 
     public function testGetFileMimeType()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "application/octet-stream",
@@ -166,9 +166,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlame()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -191,9 +191,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlameInvalidVersion()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->blame( "no_such_version" );
@@ -204,9 +204,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiff()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $diff = $file->getDiff( "9923e3bfe735ad54d67c38351400097e25aadabd" );
         
@@ -226,9 +226,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiffUnknownRevision()
     {
-        $repository = new \vcsHgCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new \vcsHgCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $diff = $file->getDiff( "1" );

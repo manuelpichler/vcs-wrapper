@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage HgCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\HgCli;
+
 /**
  * Handler for Hg repositories
  *
- * @package VCSWrapper
- * @subpackage HgCliWrapper
  * @version $Revision$
  */
-class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
+class Checkout extends Directory implements \vcsCheckout
 {
     /**
      * Construct repository with repository root path
@@ -67,7 +65,7 @@ class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
         {
             if ( count( glob( $this->root . '/*' ) ) )
             {
-                throw new vcsCheckoutFailedException( $url );
+                throw new \vcsCheckoutFailedException( $url );
             }
 
             rmdir( $this->root );
@@ -76,10 +74,10 @@ class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
         // Fix incorrect windows checkout URLs
         $url = preg_replace( '(^file://([A-Za-z]):)', 'file:///\\1:', $url );
 
-        $process = new vcsHgCliProcess();
+        $process = new Process();
         $process->argument( 'clone' );
         $process->argument( str_replace( '\\', '/', $url ) );
-        $process->argument( new pbsPathArgument( $this->root ) );
+        $process->argument( new \pbsPathArgument( $this->root ) );
         $return = $process->execute();
 
         // Cache basic revision information for checkout and update
@@ -104,12 +102,12 @@ class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
         // Remember version before update try
         $oldVersion = $this->getVersionString();
 
-        $process = new vcsHgCliProcess();
+        $process = new Process();
         $process->workingDirectory( $this->root );
         $process->argument( 'pull' )->argument( 'default' );
         $process->execute();
 
-        $process = new vcsHgCliProcess();
+        $process = new Process();
         $process->workingDirectory( $this->root );
         $process->argument( 'update' );
         if ( $version )
@@ -129,7 +127,7 @@ class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a vcsCheckout, a vcsDirectory or a vcsFile
+     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
      * instance, depending on the given path.
      * 
      * @param string $path
@@ -142,7 +140,7 @@ class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( str_replace( '\\', '/', $fullPath ), str_replace( '\\', '/', $this->root ) ) !== 0 ) )
         {
-            throw new vcsFileNotFoundException( $path );
+            throw new \vcsFileNotFoundException( $path );
         }
 
         if ( $path === '/' )
@@ -150,7 +148,7 @@ class vcsHgCliCheckout extends vcsHgCliDirectory implements vcsCheckout
             return $this;
         }
 
-        return is_dir( $fullPath ) ? new vcsHgCliDirectory( $this->root, $path ) : new vcsHgCliFile( $this->root, $path );
+        return is_dir( $fullPath ) ? new Directory( $this->root, $path ) : new File( $this->root, $path );
     }
 }
 

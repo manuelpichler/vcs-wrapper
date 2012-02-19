@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage MercurialCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\HgCli;
+
 /**
  * Directory implementation vor Mercurial Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage MercurialCliWrapper
  * @version $Revision$
  */
-class vcsHgCliDirectory extends vcsHgCliResource implements vcsDirectory
+class Directory extends Resource implements \vcsDirectory
 {
     /**
      * Store the resources of this directory
@@ -43,9 +41,9 @@ class vcsHgCliDirectory extends vcsHgCliResource implements vcsDirectory
      * Initialize the resources array.
      * 
      * Initilaize the array containing all child elements of the current
-     * directly as vcsHgCliResource objects.
+     * directly as Resource objects.
      * 
-     * @return array(vcsHgCliResource)
+     * @return array(Resource)
      */
     protected function initializeResouces() 
     {
@@ -65,8 +63,8 @@ class vcsHgCliDirectory extends vcsHgCliResource implements vcsDirectory
             }
     
             $this->resources[] = ( is_dir( $this->root . $this->path . $path ) ?
-                new vcsHgCliDirectory( $this->root, $this->path . $path . '/' ) :
-                new vcsHgCliFile( $this->root, $this->path . $path )
+                new Directory( $this->root, $this->path . $path . '/' ) :
+                new File( $this->root, $this->path . $path )
             );
         }
 
@@ -136,7 +134,7 @@ class vcsHgCliDirectory extends vcsHgCliResource implements vcsDirectory
     /**
      * Returns the children for this instance.
      *
-     * @return vcsDirectory
+     * @return \vcsDirectory
      */
     public function getChildren() 
     {
@@ -154,7 +152,7 @@ class vcsHgCliDirectory extends vcsHgCliResource implements vcsDirectory
     {
         $this->initializeResouces();
 
-        return current( $this->resources ) instanceof vcsDirectory;
+        return current( $this->resources ) instanceof \vcsDirectory;
     }
 }
 

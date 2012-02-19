@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage MercurialCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\HgCli;
+
 /**
  * Mercurial executable wrapper for system process class
  *
- * @package VCSWrapper
- * @subpackage MercurialCliWrapper
  * @version $Revision$
  */
-class vcsHgCliProcess extends pbsSystemProcess
+class Process extends \pbsSystemProcess
 {
     /**
      * Static property containg information, if the version of the hg CLI
@@ -44,7 +42,6 @@ class vcsHgCliProcess extends pbsSystemProcess
      * Class constructor taking the executable
      * 
      * @param string $executable
-     * @return void
      */
     public function __construct( $executable = 'hg' ) 
     {
@@ -71,20 +68,20 @@ class vcsHgCliProcess extends pbsSystemProcess
             return true;
         }
 
-        $process = new pbsSystemProcess( 'env' );
+        $process = new \pbsSystemProcess( 'env' );
         $process->nonZeroExitCodeException = true;
         $process->argument( 'hg' )->argument( '--version' )->execute();
 
         if ( !preg_match( '/\(version (.*)\)/', $process->stdoutOutput, $match ) )
         {
-            throw new vcsRuntimeException( 'Could not determine Mercurial version.' );
+            throw new \vcsRuntimeException( 'Could not determine Mercurial version.' );
         }
         if ( version_compare( $match[1], '1.3', '>=' ) )
         {
             return self::$checked = true;
         }
 
-        throw new vcsRuntimeException( 'Mercurial is required in a minimum version of 1.3.' );
+        throw new \vcsRuntimeException( 'Mercurial is required in a minimum version of 1.3.' );
     }
 }
 

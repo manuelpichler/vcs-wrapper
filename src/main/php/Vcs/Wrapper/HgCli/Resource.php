@@ -17,19 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage HgCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\HgCli;
+
 /**
  * Resource implementation vor Hg Cli wrapper
  *
- * @package VCSWrapper
  * @version $Revision$
  **/
-abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcsAuthored, vcsLogged
+abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAuthored, \vcsLogged
 {
     /**
      * Current version of the given resource
@@ -44,13 +43,13 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
      * Get the base information, like version, author, etc for the current
      * resource in the current version.
      *
-     * @return vcsLogEntry
+     * @return \vcsLogEntry
      */
     protected function getResourceInfo() 
     {
         if ( $this->currentVersion !== null )
         {
-            $info = vcsCache::get( $this->path, $this->currentVersion, 'info' );
+            $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' );
         }
 
         if ( $this->currentVersion === null ||
@@ -60,7 +59,7 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
 
             // Fecth for specified version, if set
             $info = $this->currentVersion !== null ? $log[$this->currentVersion] : end( $log );
-            vcsCache::cache( $this->path, $this->currentVersion = (string) $info->version, 'info', $info );
+            \vcsCache::cache( $this->path, $this->currentVersion = (string) $info->version, 'info', $info );
         }
 
         return $info;
@@ -73,11 +72,11 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
      */
     protected function getResourceLog() 
     {
-        $log = vcsCache::get( $this->path, $this->currentVersion, 'log' );
+        $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' );
         if ( $log === false )
         {
             // Refetch the basic logrmation, and cache it.
-            $process = new vcsHgCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
 
             // Fetch for specified version, if set
@@ -89,7 +88,7 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
             // Execute log command
             $process->argument( 'log' );
             $process->argument( '--template' )->argument( '{node}\t{author|email}\t{date|isodate}\t{desc|urlescape}\n' );
-            $process->argument( new pbsPathArgument( '.' . $this->path ) );
+            $process->argument( new \pbsPathArgument( '.' . $this->path ) );
             $process->execute();
 
             // Parse commit log
@@ -117,14 +116,14 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
                     $author = substr( $author, 0, $atPosition );
                 }
                 
-                $log[$node] = new vcsLogEntry( $node, $author, urldecode( $desc ), strtotime( $date ) );
+                $log[$node] = new \vcsLogEntry( $node, $author, urldecode( $desc ), strtotime( $date ) );
             }
             $log = array_reverse( $log );
             $last = end( $log );
 
             $this->currentVersion = (string) $last->version;
             // Cache extracted data
-            vcsCache::cache( $this->path, $this->currentVersion, 'log', $log );
+            \vcsCache::cache( $this->path, $this->currentVersion, 'log', $log );
         }
 
         return $log;
@@ -221,7 +220,7 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
 
         if ( !isset( $log[$version] ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version]->author;
@@ -231,7 +230,7 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
      * Get full revision log
      *
      * Return the full revision log for the given resource. The revision log
-     * should be returned as an array of vcsLogEntry objects.
+     * should be returned as an array of \vcsLogEntry objects.
      *
      * @return array
      */
@@ -246,7 +245,7 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
      * Get the revision log entry for the spcified version.
      * 
      * @param string $version
-     * @return vcsLogEntry
+     * @return \vcsLogEntry
      */
     public function getLogEntry( $version ) 
     {
@@ -254,7 +253,7 @@ abstract class vcsHgCliResource extends vcsResource implements vcsVersioned, vcs
 
         if ( !isset( $log[$version] ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version];
