@@ -26,7 +26,7 @@ class BlameRegexpTest extends TestCase
      */
     public function testRegexpMatchesBlameLine( $blameLine )
     {
-        self::assertGreaterThan( 0, preg_match( \vcsGitCliFile::BLAME_REGEXP, $blameLine, $match ) );
+        self::assertGreaterThan( 0, preg_match( File::BLAME_REGEXP, $blameLine, $match ) );
     }
 
     /**

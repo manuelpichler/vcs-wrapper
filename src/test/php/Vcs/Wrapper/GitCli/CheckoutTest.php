@@ -35,13 +35,13 @@ class CheckoutTest extends TestCase
      */
     public function testInitializeInvalidCheckout()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file:///hopefully/not/existing/git/repo' );
     }
 
     public function testInitializeCheckout()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertTrue(
@@ -52,7 +52,7 @@ class CheckoutTest extends TestCase
 
     public function testUpdateCheckout()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertFalse( $repository->update(), "Repository should already be on latest revision." );
@@ -71,23 +71,23 @@ class CheckoutTest extends TestCase
         self::copyRecursive( $this->extractRepository( 'git' ), $repDir );
 
         // Copy the repository to not chnage the test reference repository
-        $checkin = new \vcsGitCliCheckout( $this->tempDir . '/ci' );
+        $checkin = new Checkout( $this->tempDir . '/ci' );
         $checkin->initialize( 'file://' . $repDir );
 
-        $checkout = new \vcsGitCliCheckout( $this->tempDir . '/co' );
+        $checkout = new Checkout( $this->tempDir . '/co' );
         $checkout->initialize( 'file://' . $repDir );
 
         // Manually execute update in repository
         file_put_contents( $this->tempDir . '/ci/another', 'Some test contents' );
-        $git = new \vcsGitCliProcess();
+        $git = new Process();
         $git->workingDirectory( $this->tempDir . '/ci' );
         $git->argument( 'add' )->argument( 'another' )->execute();
         
-        $git = new \vcsGitCliProcess();
+        $git = new Process();
         $git->workingDirectory( $this->tempDir . '/ci' );
         $git->argument( 'commit' )->argument( 'another' )->argument( '-m' )->argument( '- Test commit.' )->execute();
 
-        $git = new \vcsGitCliProcess();
+        $git = new Process();
         $git->workingDirectory( $this->tempDir . '/ci' );
         $git->argument( 'push' )->argument( 'origin' )->execute();
 
@@ -100,7 +100,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertSame(
@@ -111,7 +111,7 @@ class CheckoutTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertSame(
@@ -129,7 +129,7 @@ class CheckoutTest extends TestCase
     {
         $this->markTestSkipped( 'Downgrade seems not to remove files from checkout.' );
 
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
         $this->assertTrue(
             file_exists( $this->tempDir . '/dir1/file' ),
@@ -146,7 +146,7 @@ class CheckoutTest extends TestCase
 
     public function testCompareVersions()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertTrue(
@@ -164,7 +164,7 @@ class CheckoutTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertEquals(
@@ -175,7 +175,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertEquals(
@@ -199,7 +199,7 @@ class CheckoutTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertEquals(
@@ -212,7 +212,7 @@ class CheckoutTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         try {
@@ -224,7 +224,7 @@ class CheckoutTest extends TestCase
 
     public function testIterateCheckoutContents()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $files = array();
@@ -246,7 +246,7 @@ class CheckoutTest extends TestCase
 
     public function testGetCheckout()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertSame(
@@ -262,7 +262,7 @@ class CheckoutTest extends TestCase
 
     public function testGetInvalid()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         try
@@ -276,23 +276,23 @@ class CheckoutTest extends TestCase
 
     public function testGetDirectory()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertEquals(
             $repository->get( '/dir1' ),
-            new \vcsGitCliDirectory( $this->tempDir, '/dir1' )
+            new Directory( $this->tempDir, '/dir1' )
         );
     }
 
     public function testGetFile()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertEquals(
             $repository->get( '/file' ),
-            new \vcsGitCliFile( $this->tempDir, '/file' )
+            new File( $this->tempDir, '/file' )
         );
     }
 }

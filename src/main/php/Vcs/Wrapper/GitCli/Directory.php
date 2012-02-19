@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\GitCli;
+
 /**
  * Directory implementation vor Git Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  */
-class vcsGitCliDirectory extends vcsGitCliResource implements vcsDirectory
+class Directory extends Resource implements \vcsDirectory
 {
     /**
      * Array with children resources of the directory, used for the iterator.
@@ -43,9 +41,9 @@ class vcsGitCliDirectory extends vcsGitCliResource implements vcsDirectory
      * Initialize resources array
      * 
      * Initilaize the array containing all child elements of the current
-     * directly as vcsGitCliResource objects.
+     * directly as Resource objects.
      * 
-     * @return array(vcsGitCliResource)
+     * @return array(Resource)
      */
     protected function initializeResouces()
     {
@@ -65,8 +63,8 @@ class vcsGitCliDirectory extends vcsGitCliResource implements vcsDirectory
             }
     
             $this->resources[] = ( is_dir( $this->root . $this->path . $path ) ?
-                new vcsGitCliDirectory( $this->root, $this->path . $path . '/' ) :
-                new vcsGitCliFile( $this->root, $this->path . $path )
+                new Directory( $this->root, $this->path . $path . '/' ) :
+                new File( $this->root, $this->path . $path )
             );
         }
         $contents->close();
@@ -150,7 +148,7 @@ class vcsGitCliDirectory extends vcsGitCliResource implements vcsDirectory
     /**
      * Returns the children for this instance.
      *
-     * @return vcsDirectory
+     * @return \vcsDirectory
      */
     public function getChildren()
     {
@@ -174,7 +172,7 @@ class vcsGitCliDirectory extends vcsGitCliResource implements vcsDirectory
             $this->initializeResouces();
         }
 
-        return current( $this->resources ) instanceof vcsDirectory;
+        return current( $this->resources ) instanceof \vcsDirectory;
     }
 }
 

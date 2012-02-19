@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Wrapper\GitCli;
+
 /**
  * File implementation vor Git Cli wrapper
  *
- * @package VCSWrapper
- * @subpackage GitCliWrapper
  * @version $Revision$
  */
-class vcsGitCliFile extends vcsGitCliResource implements vcsFile, vcsBlameable, vcsDiffable
+class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
 {
     /**
      * Regular expression used to extract data from a git blame line.
@@ -95,17 +93,17 @@ class vcsGitCliFile extends vcsGitCliResource implements vcsFile, vcsBlameable, 
 
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $blame = vcsCache::get( $this->path, $version, 'blame' ) ) === false )
+        if ( ( $blame = \vcsCache::get( $this->path, $version, 'blame' ) ) === false )
         {
             // Refetch the basic blamermation, and cache it.
-            $process = new vcsGitCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
 
             // Execute command
-            $return = $process->argument( 'blame' )->argument( '-l' )->argument( new pbsPathArgument( '.' . $this->path ) )->execute();
+            $return = $process->argument( 'blame' )->argument( '-l' )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
             $contents = preg_split( '(\r\n|\r|\n)', trim( $process->stdoutOutput ) );
 
             // Convert returned lines into diff structures
@@ -115,15 +113,15 @@ class vcsGitCliFile extends vcsGitCliResource implements vcsFile, vcsBlameable, 
                 if ( preg_match( self::BLAME_REGEXP, $line, $match ) )
                 {
                     $match['line'] = isset( $match['line'] ) ? $match['line'] : null;
-                    $blame[] = new vcsBlameStruct( $match['line'], $match['version'], $match['author'], strtotime( $match['date'] ) );
+                    $blame[] = new \vcsBlameStruct( $match['line'], $match['version'], $match['author'], strtotime( $match['date'] ) );
                 }
                 else
                 {
-                    throw new vcsRuntimeException( "Could not parse line: $line" );
+                    throw new \vcsRuntimeException( "Could not parse line: $line" );
                 }
             }
 
-            vcsCache::cache( $this->path, $version, 'blame', $blame );
+            \vcsCache::cache( $this->path, $version, 'blame', $blame );
         }
 
         return $blame;
@@ -138,29 +136,29 @@ class vcsGitCliFile extends vcsGitCliResource implements vcsFile, vcsBlameable, 
      *
      * @param string $version 
      * @param string $current 
-     * @return vcsResource
+     * @return \vcsResource
      */
     public function getDiff( $version, $current = null )
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new vcsNoSuchVersionException( $this->path, $version );
+            throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = vcsCache::get( $this->path, $version, 'diff' ) ) === false )
+        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
-            $process = new vcsGitCliProcess();
+            $process = new Process();
             $process->workingDirectory( $this->root );
             $process->argument( 'diff' )->argument( '--no-ext-diff' );
-            $process->argument( $version . '..' . $current )->argument( new pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( $version . '..' . $current )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
 
             // Parse resulting unified diff
-            $parser = new vcsUnifiedDiffParser();
+            $parser = new \vcsUnifiedDiffParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
-            vcsCache::cache( $this->path, $version, 'diff', $diff );
+            \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }
 
         return $diff;

@@ -31,9 +31,9 @@ class FileTest extends TestCase
 
     public function testGetVersionString()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             "2037a8d0efd4e51a4dd84161837f8865cf7d34b1",
@@ -43,9 +43,9 @@ class FileTest extends TestCase
 
     public function testGetVersions()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertSame(
             array(
@@ -58,9 +58,9 @@ class FileTest extends TestCase
 
     public function testGetAuthor()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             'kore',
@@ -70,9 +70,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorOldVersion()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             'kore',
@@ -82,9 +82,9 @@ class FileTest extends TestCase
 
     public function testGetAuthorInvalidVersion()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getAuthor( 'invalid' );
@@ -95,9 +95,9 @@ class FileTest extends TestCase
 
     public function testGetLog()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -114,9 +114,9 @@ class FileTest extends TestCase
 
     public function testGetLogEntry()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             new \vcsLogEntry(
@@ -128,9 +128,9 @@ class FileTest extends TestCase
 
     public function testGetUnknownLogEntry()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->getLogEntry( "no_such_version" );
@@ -141,9 +141,9 @@ class FileTest extends TestCase
 
     public function testGetFileContents()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "Some other test file\n",
@@ -153,9 +153,9 @@ class FileTest extends TestCase
 
     public function testGetFileMimeType()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/dir1/file' );
+        $file = new File( $this->tempDir, '/dir1/file' );
 
         $this->assertEquals(
             "application/octet-stream",
@@ -165,9 +165,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlame()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
             array(
@@ -190,9 +190,9 @@ class FileTest extends TestCase
 
     public function testGetFileBlameInvalidVersion()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $file->blame( "no_such_version" );
@@ -203,9 +203,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiff()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         $diff = $file->getDiff( "43fb423f4ee079af2f3cba4e07eb8b10f4476815" );
         
@@ -225,9 +225,9 @@ class FileTest extends TestCase
 
     public function testGetFileDiffUnknownRevision()
     {
-        $repository = new \vcsGitCliCheckout( $this->tempDir );
+        $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-        $file = new \vcsGitCliFile( $this->tempDir, '/file' );
+        $file = new File( $this->tempDir, '/file' );
 
         try {
             $diff = $file->getDiff( "1" );
