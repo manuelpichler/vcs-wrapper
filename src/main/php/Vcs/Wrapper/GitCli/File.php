@@ -29,6 +29,7 @@ use \Vcs\Cache;
 use \Vcs\Diffable;
 use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * File implementation vor Git Cli wrapper
@@ -110,7 +111,7 @@ class File extends Resource implements \Vcs\File, Blameable, Diffable
             $process->workingDirectory( $this->root );
 
             // Execute command
-            $return = $process->argument( 'blame' )->argument( '-l' )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( 'blame' )->argument( '-l' )->argument( new PathArgument( '.' . $this->path ) )->execute();
             $contents = preg_split( '(\r\n|\r|\n)', trim( $process->stdoutOutput ) );
 
             // Convert returned lines into diff structures
@@ -160,7 +161,7 @@ class File extends Resource implements \Vcs\File, Blameable, Diffable
             $process = new Process();
             $process->workingDirectory( $this->root );
             $process->argument( 'diff' )->argument( '--no-ext-diff' );
-            $process->argument( $version . '..' . $current )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
+            $process->argument( $version . '..' . $current )->argument( new PathArgument( '.' . $this->path ) )->execute();
 
             // Parse resulting unified diff
             $parser = new UnifiedParser();

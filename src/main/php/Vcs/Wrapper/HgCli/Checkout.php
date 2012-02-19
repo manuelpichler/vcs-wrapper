@@ -25,6 +25,7 @@ namespace Vcs\Wrapper\HgCli;
 
 use \Vcs\CheckoutFailedException;
 use \Vcs\FileNotFoundException;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * Handler for Hg repositories
@@ -79,8 +80,8 @@ class Checkout extends Directory implements \Vcs\Checkout
         $process = new Process();
         $process->argument( 'clone' );
         $process->argument( str_replace( '\\', '/', $url ) );
-        $process->argument( new \pbsPathArgument( $this->root ) );
-        $return = $process->execute();
+        $process->argument( new PathArgument( $this->root ) );
+        $process->execute();
 
         // Cache basic revision information for checkout and update
         // currentVersion property.

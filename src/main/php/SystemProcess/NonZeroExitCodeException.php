@@ -1,5 +1,7 @@
 <?php
 
+namespace SystemProcess;
+
 /**
  * Exception thrown if an executed application returns a non zero exit code 
  * 
@@ -8,7 +10,7 @@
  * @author Jakob Westhoff <jakob@php.net> 
  * @license LGPLv3
  */
-class pbsSystemProcessNonZeroExitCodeException extends Exception 
+class NonZeroExitCodeException extends \Exception
 {
     public $exitCode;
     public $stdoutOutput;
@@ -36,5 +38,3 @@ class pbsSystemProcessNonZeroExitCodeException extends Exception
         $this->command = $command;
     }
 }
-
-?>

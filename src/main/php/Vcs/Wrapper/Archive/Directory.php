@@ -26,8 +26,6 @@ namespace Vcs\Wrapper\Archive;
 /**
  * Directory implementation for archive wrapper
  *
- * @package VCSWrapper
- * @subpackage ArchiveWrapper
  * @version $Revision$
  */
 class Directory extends Resource implements \Vcs\Directory

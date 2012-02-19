@@ -28,6 +28,7 @@ use \Vcs\Blameable;
 use \Vcs\Cache;
 use \Vcs\Diffable;
 use \Vcs\NoSuchVersionException;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * File implementation vor Bazaar Cli wrapper
@@ -110,7 +111,7 @@ class File extends Resource implements \Vcs\File, Blameable, Diffable
             {
                 $process->argument( '-r' . $version );
             }
-            $process->argument( new \pbsPathArgument( '.' . $this->path ) );
+            $process->argument( new PathArgument( '.' . $this->path ) );
             $process->execute();
             
             $blame = array();

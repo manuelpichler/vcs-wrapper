@@ -20,6 +20,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace SystemProcess;
+
 /**
  * Argument base class
  *
@@ -30,7 +32,7 @@
  * @author Kore Nordmann <kore@php.net>
  * @license LGPLv3
  */
-abstract class pbsArgument 
+abstract class Argument
 {
     /**
      * Raw argument value
@@ -42,8 +44,7 @@ abstract class pbsArgument
     /**
      * Construct argument from argument value
      * 
-     * @param string $value 
-     * @return void
+     * @param string $value
      */
     public function __construct( $value )
     {

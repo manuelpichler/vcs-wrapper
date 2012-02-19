@@ -24,6 +24,7 @@
 namespace Vcs\Wrapper\SvnCli;
 
 use \Vcs\FileNotFoundException;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * Handler for SVN repositories
@@ -67,7 +68,7 @@ class Checkout extends Directory implements \Vcs\Checkout
         $url = preg_replace( '(^file://([A-Za-z]):)', 'file:///\\1:', $url );
 
         $process = new Process( 'svn', $this->username, $this->password );
-        $process->argument( 'checkout' )->argument( str_replace( '\\', '/', $url ) )->argument( new \pbsPathArgument( $this->root ) )->execute();
+        $process->argument( 'checkout' )->argument( str_replace( '\\', '/', $url ) )->argument( new PathArgument( $this->root ) )->execute();
 
         // Cache basic revision information for checkout and update
         // currentVersion property.
@@ -98,7 +99,7 @@ class Checkout extends Directory implements \Vcs\Checkout
             $process->argument( '-r' . $version );
         }
 
-        $process->argument( 'update' )->argument( new \pbsPathArgument( $this->root ) )->execute();
+        $process->argument( 'update' )->argument( new PathArgument( $this->root ) )->execute();
 
         // Check if an update has happened
         $this->currentVersion = null;

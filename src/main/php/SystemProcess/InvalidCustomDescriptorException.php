@@ -1,6 +1,8 @@
 <?php
 
-class pbsSystemProcessInvalidCustomDescriptorException extends Exception 
+namespace SystemProcess;
+
+class InvalidCustomDescriptorException extends \Exception
 {
     public function __construct( $fd ) 
     {

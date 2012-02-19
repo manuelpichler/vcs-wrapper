@@ -29,6 +29,7 @@ use \Vcs\Cache;
 use \Vcs\Diffable;
 use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * File implementation vor Mercurial Cli wrapper
@@ -119,7 +120,7 @@ class File extends Resource implements \Vcs\File, Blameable, Diffable
             // Execute command
             $process->argument( 'blame' );
             $process->argument( '-uvdcl' );
-            $process->argument( new \pbsPathArgument( '.' . $this->path ) );
+            $process->argument( new PathArgument( '.' . $this->path ) );
             $return = $process->execute();
             $contents = preg_split( '(\r\n|\r|\n)', trim( $process->stdoutOutput ) );
 
@@ -217,7 +218,7 @@ class File extends Resource implements \Vcs\File, Blameable, Diffable
                 $process->argument( '-r' . $current );
             }
             $process->argument( '-r' . $version );
-            $process->argument( new \pbsPathArgument( '.' . $this->path ) );
+            $process->argument( new PathArgument( '.' . $this->path ) );
             $process->execute();
 
             // Parse resulting unified diff

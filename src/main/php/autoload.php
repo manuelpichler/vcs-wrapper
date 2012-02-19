@@ -17,7 +17,6 @@
  * along with vcs_wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
@@ -30,24 +29,9 @@
  */
 
 spl_autoload_register( function( $class ) {
-    static $paths = array(
-        'pbsSystemProcessInvalidCustomDescriptorException' => 'external/exceptions/system_process/invalidCustomFileDescriptor.php',
-        'pbsSystemProcessNonZeroExitCodeException'         => 'external/exceptions/system_process/nonZeroExitCode.php',
-        'pbsSystemProcessNotRunningException'              => 'external/exceptions/system_process/notRunning.php',
-        'pbsSystemProcessRecursivePipeException'           => 'external/exceptions/system_process/recursivePipe.php',
-        'pbsArgument'                                      => 'external/system_process/argument.php',
-        'pbsEscapedArgument'                               => 'external/system_process/argument/escaped.php',
-        'pbsPathArgument'                                  => 'external/system_process/argument/path.php',
-        'pbsUnescapedArgument'                             => 'external/system_process/argument/unescaped.php',
-        'pbsSystemProcess'                                 => 'external/system_process/systemProcess.php',
-    );
-
-    if ( isset( $paths[$class] ) )
+    $file = __DIR__ . '/' . strtr( $class, '\\', '/' ) . '.php';
+    if ( file_exists( $file ) )
     {
-        include __DIR__ . DIRECTORY_SEPARATOR . $paths[$class];
-    }
-    else if ( 0 === strpos( $class, 'Vcs\\' ) )
-    {
-        include __DIR__ . '/' . strtr( $class, '\\', '/' ) . '.php';
+        include $file;
     }
 } );

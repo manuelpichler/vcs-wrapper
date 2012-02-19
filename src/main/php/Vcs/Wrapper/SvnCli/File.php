@@ -28,6 +28,7 @@ use \Vcs\Blameable;
 use \Vcs\Cache;
 use \Vcs\Fetchable;
 use \Vcs\NoSuchVersionException;
+use \SystemProcess\Argument\PathArgument;
 
 /**
  * File implementation vor SVN Cli wrapper
@@ -111,7 +112,7 @@ class File extends Resource implements \Vcs\File, Blameable, Fetchable
             $process->argument( '--xml' );
 
             // Execute command
-            $process->argument( 'blame' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'blame' )->argument( new PathArgument( $this->root . $this->path ) )->execute();
             $xml = simplexml_load_string( $process->stdoutOutput );
 
             // Check if blame information si available. Is absent fro binary
@@ -163,7 +164,7 @@ class File extends Resource implements \Vcs\File, Blameable, Fetchable
             $process->argument( '-r' . $version );
 
             // Execute command
-            $process->argument( 'cat' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'cat' )->argument( new PathArgument( $this->root . $this->path ) )->execute();
             Cache::cache( $this->path, $version, 'content', $content = $process->stdoutOutput );
         }
 
