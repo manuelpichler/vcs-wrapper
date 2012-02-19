@@ -23,7 +23,11 @@
 
 namespace Vcs\Wrapper\GitCli;
 
+use \Vcs\Blame;
+use \Vcs\Blameable;
 use \Vcs\Cache;
+use \Vcs\Diffable;
+use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -31,7 +35,7 @@ use \Vcs\Diff\Parser\UnifiedParser;
  *
  * @version $Revision$
  */
-class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
+class File extends Resource implements \Vcs\File, Blameable, Diffable
 {
     /**
      * Regular expression used to extract data from a git blame line.
@@ -96,7 +100,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
 
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         if ( ( $blame = Cache::get( $this->path, $version, 'blame' ) ) === false )
@@ -116,11 +120,11 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
                 if ( preg_match( self::BLAME_REGEXP, $line, $match ) )
                 {
                     $match['line'] = isset( $match['line'] ) ? $match['line'] : null;
-                    $blame[] = new \vcsBlameStruct( $match['line'], $match['version'], $match['author'], strtotime( $match['date'] ) );
+                    $blame[] = new Blame( $match['line'], $match['version'], $match['author'], strtotime( $match['date'] ) );
                 }
                 else
                 {
-                    throw new \vcsRuntimeException( "Could not parse line: $line" );
+                    throw new \RuntimeException( "Could not parse line: $line" );
                 }
             }
 
@@ -139,13 +143,13 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
      *
      * @param string $version 
      * @param string $current 
-     * @return \vcsResource
+     * @return \Vcs\Resource
      */
     public function getDiff( $version, $current = null )
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         $current = ( $current === null ) ? $this->getVersionString() : $current;

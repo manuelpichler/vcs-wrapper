@@ -23,6 +23,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs;
+
 /*
  * Base class for directories in the VCS wrapper.
  *
@@ -31,7 +33,7 @@
  * class should be extended with interfaces annotating the VCS features beside
  * basic directory iteration.
  */
-interface vcsCheckout extends vcsDirectory
+interface Checkout extends Directory
 {
     /**
      * Initialize repository
@@ -66,7 +68,7 @@ interface vcsCheckout extends vcsDirectory
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a vcsCheckout, a vcsDirectory or a vcsFile
+     * Method either returns a \Vcs\Checkout, a \Vcs\Directory or a \Vcs\File
      * instance, depending on the given path.
      * 
      * @param string $path

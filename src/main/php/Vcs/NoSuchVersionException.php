@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper authored interface
+ * PHP VCS wrapper abstract file base class
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,30 +17,30 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-/*
- * Interface for resources with available user information
+namespace Vcs;
+
+use \LogicException;
+
+/**
+ * Exception thrown when a version is requested from a repository, which does
+ * not exist.
  *
- * This interface should be implemented by resources which have information
- * about the authors which changed / created the contents available.
+ * @version $Revision$
  */
-interface vcsAuthored extends vcsVersioned
+class NoSuchVersionException extends LogicException
 {
     /**
-     * Get author 
+     * Construct exception
      *
-     * Return author information for the resource. Optionally the $version
-     * parameter may be passed to the method to specify a version the author
-     * information should be returned for.
-     *
-     * @param mixed $version 
-     * @return string
+     * @param string $path
+     * @param string $version
      */
-    public function getAuthor( $version = null );
+    public function __construct( $path, $version )
+    {
+        parent::__construct( "There is no version '$version' of resource '$path'." );
+    }
 }
-

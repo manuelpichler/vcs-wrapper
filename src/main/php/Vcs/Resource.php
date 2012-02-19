@@ -17,11 +17,11 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
+
+namespace Vcs;
 
 /**
  * Base class for resources in the VCS wrapper.
@@ -29,11 +29,9 @@
  * This class works as a base class for file and directory resources in the
  * wrapper implementations.
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  */
-abstract class vcsResource
+abstract class Resource
 {
     /**
      * Path to the repository root / checkout.
@@ -56,9 +54,8 @@ abstract class vcsResource
      * the actual repository contents, and the local paht inside the
      * repository.
      * 
-     * @param string $root 
-     * @param string $path 
-     * @return void
+     * @param string $root
+     * @param string $path
      */
     public function __construct( $root, $path )
     {

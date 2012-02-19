@@ -23,12 +23,14 @@
 
 namespace Vcs\Diff;
 
+use \Vcs\Struct;
+
 /**
  * Basic struct containing a diff line
  *
  * @version $Revision$
  */
-class Line extends \vcsBaseStruct
+class Line extends Struct
 {
     /**
      * Array containing the structs properties.
@@ -77,7 +79,7 @@ class Line extends \vcsBaseStruct
      */
     public static function __set_state( array $properties, $class = __CLASS__ )
     {
-        return \vcsBaseStruct::__set_state( $properties, $class );
+        return Struct::__set_state( $properties, $class );
     }
 }
 

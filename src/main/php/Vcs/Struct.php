@@ -17,11 +17,11 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
+
+namespace Vcs;
 
 use \Vcs\Cache\Cacheable;
 
@@ -29,11 +29,9 @@ use \Vcs\Cache\Cacheable;
  * Basic struct class with optional value validation when the __set method gets
  * overwritten in the child classes.
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  */
-class vcsBaseStruct implements Cacheable
+class Struct implements Cacheable
 {
     /**
      * Array containing the structs properties.
@@ -74,7 +72,7 @@ class vcsBaseStruct implements Cacheable
         // this check pass, even if the property is set to null.
         if ( !array_key_exists( $property, $this->properties ) )
         {
-            throw new arbitPropertyException( $property );
+            throw new \OutOfRangeException( $property );
         }
 
         return $this->properties[$property];
@@ -104,7 +102,7 @@ class vcsBaseStruct implements Cacheable
      * @ignore
      * @param array $properties 
      * @param string $class 
-     * @return vcsBaseStruct
+     * @return \Vcs\Struct
      */
     public static function __set_state( array $properties, $class = __CLASS__ )
     {

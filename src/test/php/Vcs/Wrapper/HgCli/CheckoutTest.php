@@ -11,6 +11,7 @@ namespace Vcs\Wrapper\HgCli;
 use \Vcs\TestCase;
 
 use \Vcs\Cache;
+use \Vcs\LogEntry;
 
 /**
  * @group mercurial
@@ -181,16 +182,16 @@ class CheckoutTest extends TestCase
 
         $this->assertEquals(
             array(
-                "9923e3bfe735ad54d67c38351400097e25aadabd" => new \vcsLogEntry(
+                "9923e3bfe735ad54d67c38351400097e25aadabd" => new LogEntry(
                     "9923e3bfe735ad54d67c38351400097e25aadabd", "t.tom", "- Added a first test file", 1263330480
                 ),
-                "04cae3af7ea2c880d7f70fab0583476dfc31e7ae" => new \vcsLogEntry(
+                "04cae3af7ea2c880d7f70fab0583476dfc31e7ae" => new LogEntry(
                     "04cae3af7ea2c880d7f70fab0583476dfc31e7ae", "t.tom", "- Added some test directories", 1263330600
                 ),
-                "662e49b777be9ee47ab924c02ae2da863d32536a" => new \vcsLogEntry(
+                "662e49b777be9ee47ab924c02ae2da863d32536a" => new LogEntry(
                     "662e49b777be9ee47ab924c02ae2da863d32536a", "t.tom", "- Renamed directory", 1263330600
                 ),
-                "b8ec741c8de1e60c5fedd98c350e3569c46ed630" => new \vcsLogEntry(
+                "b8ec741c8de1e60c5fedd98c350e3569c46ed630" => new LogEntry(
                     "b8ec741c8de1e60c5fedd98c350e3569c46ed630", "t.tom", "- Modified file", 1263330660
                 ),
             ),
@@ -204,23 +205,22 @@ class CheckoutTest extends TestCase
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
 
         $this->assertEquals(
-            new \vcsLogEntry(
+            new LogEntry(
                 "662e49b777be9ee47ab924c02ae2da863d32536a", "t.tom", "- Renamed directory", 1263330600
             ),
             $repository->getLogEntry( "662e49b777be9ee47ab924c02ae2da863d32536a" )
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetUnknownLogEntry()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-
-        try {
-            $repository->getLogEntry( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $repository->getLogEntry( "no_such_version" );
     }
 
     public function testIterateCheckoutContents()
@@ -261,18 +261,15 @@ class CheckoutTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\FileNotFoundException
+     */
     public function testGetInvalid()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-
-        try
-        {
-            $repository->get( '/../' );
-            $this->fail( 'Expected \vcsFileNotFoundException.' );
-        }
-        catch ( \vcsFileNotFoundException $e )
-        { /* Expected */ }
+        $repository->get( '/../' );
     }
 
     public function testGetDirectory()

@@ -9,7 +9,9 @@ namespace Vcs\Wrapper\HgCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Blame;
 use \Vcs\Cache;
+use \Vcs\LogEntry;
 use \Vcs\Diff\Chunk;
 use \Vcs\Diff\Line;
 
@@ -84,17 +86,17 @@ class FileTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetAuthorInvalidVersion()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new File( $this->tempDir, '/file' );
 
-        try {
-            $file->getAuthor( 'invalid' );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $file = new File( $this->tempDir, '/file' );
+        $file->getAuthor( 'invalid' );
     }
 
     public function testGetLog()
@@ -105,10 +107,10 @@ class FileTest extends TestCase
 
         $this->assertEquals(
             array(
-                '9923e3bfe735ad54d67c38351400097e25aadabd' => new \vcsLogEntry(
+                '9923e3bfe735ad54d67c38351400097e25aadabd' => new LogEntry(
                     "9923e3bfe735ad54d67c38351400097e25aadabd", "t.tom", "- Added a first test file", 1263330480
                 ),
-                'b8ec741c8de1e60c5fedd98c350e3569c46ed630' => new \vcsLogEntry(
+                'b8ec741c8de1e60c5fedd98c350e3569c46ed630' => new LogEntry(
                     "b8ec741c8de1e60c5fedd98c350e3569c46ed630", "t.tom", "- Modified file", 1263330660
                 ),
             ),
@@ -123,24 +125,24 @@ class FileTest extends TestCase
         $file = new File( $this->tempDir, '/file' );
 
         $this->assertEquals(
-            new \vcsLogEntry(
+            new LogEntry(
                     "b8ec741c8de1e60c5fedd98c350e3569c46ed630", "t.tom", "- Modified file", 1263330660
             ),
             $file->getLogEntry( "b8ec741c8de1e60c5fedd98c350e3569c46ed630" )
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetUnknownLogEntry()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new File( $this->tempDir, '/file' );
 
-        try {
-            $file->getLogEntry( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $file = new File( $this->tempDir, '/file' );
+        $file->getLogEntry( "no_such_version" );
     }
 
     public function testGetFileContents()
@@ -175,13 +177,13 @@ class FileTest extends TestCase
 
         $this->assertEquals(
             array(
-                new \vcsBlameStruct(
+                new Blame(
                     'Some test file',
                     '9923e3bfe735ad54d67c38351400097e25aadabd',
                     't.tom',
                     1263330521
                 ),
-                new \vcsBlameStruct(
+                new Blame(
                     'Another line in the file',
                     'b8ec741c8de1e60c5fedd98c350e3569c46ed630',
                     't.tom',
@@ -192,17 +194,17 @@ class FileTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetFileBlameInvalidVersion()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new File( $this->tempDir, '/file' );
 
-        try {
-            $file->blame( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $file = new File( $this->tempDir, '/file' );
+        $file->blame( "no_such_version" );
     }
 
     public function testGetFileDiff()
@@ -227,17 +229,17 @@ class FileTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetFileDiffUnknownRevision()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'hg' ) );
-        $file = new File( $this->tempDir, '/file' );
 
-        try {
-            $diff = $file->getDiff( "1" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $file = new File( $this->tempDir, '/file' );
+        $file->getDiff( "1" );
     }
 }
 

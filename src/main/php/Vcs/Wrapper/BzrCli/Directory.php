@@ -28,7 +28,7 @@ namespace Vcs\Wrapper\BzrCli;
  *
  * @version $Revision$
  */
-class Directory extends Resource implements \vcsDirectory
+class Directory extends Resource implements \Vcs\Directory
 {
     /**
      * Store the resources of this directory
@@ -134,7 +134,7 @@ class Directory extends Resource implements \vcsDirectory
     /**
      * Returns the children for this instance.
      *
-     * @return \vcsDirectory
+     * @return \Vcs\Directory
      */
     public function getChildren() 
     {
@@ -152,7 +152,7 @@ class Directory extends Resource implements \vcsDirectory
     {
         $this->initializeResouces();
 
-        return current( $this->resources ) instanceof \vcsDirectory;
+        return current( $this->resources ) instanceof \Vcs\Directory;
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper base metadata cache metadata handler
+ * PHP VCS wrapper abstract file base class
  *
  * This file is part of vcs-wrapper.
  *
@@ -21,25 +21,25 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Vcs\Cache;
+namespace Vcs;
 
 use \LogicException;
 
 /**
- * Exception thrown when a value is passed to the cache, which is not
- * cacheable.
+ * Exception thrown when a file or directory is requested from a
+ * repository, which is not part of the repository.
  *
  * @version $Revision$
  */
-class NotCacheableException extends LogicException
+class FileNotFoundException extends LogicException
 {
     /**
      * Construct exception
      *
-     * @param mixed $value
+     * @param string $file
      */
-    public function __construct( $value )
+    public function __construct( $file )
     {
-        parent::__construct( 'Value of type ' . gettype( $value ) . ' cannot be cached. Only arrays, scalar values and objects implementing Cacheable are allowed.' );
+        parent::__construct( "Could not locate '$file' inside the repository." );
     }
 }

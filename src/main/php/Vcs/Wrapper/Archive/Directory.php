@@ -30,7 +30,7 @@ namespace Vcs\Wrapper\Archive;
  * @subpackage ArchiveWrapper
  * @version $Revision$
  */
-class Directory extends Resource implements \vcsDirectory
+class Directory extends Resource implements \Vcs\Directory
 {
     /**
      * Array with children resources of the directory, used for the iterator.
@@ -172,7 +172,7 @@ class Directory extends Resource implements \vcsDirectory
             $this->initializeResouces();
         }
 
-        return current( $this->resources ) instanceof \vcsDirectory;
+        return current( $this->resources ) instanceof \Vcs\Directory;
     }
 }
 

@@ -23,17 +23,19 @@
 
 namespace Vcs\Wrapper\CvsCli;
 
+use \Vcs\Resource;
+
 /**
  * Directory implementation vor CVS Cli wrapper
  *
  * @version $Revision$
  */
-class Directory extends \vcsResource implements \vcsDirectory
+class Directory extends Resource implements \Vcs\Directory
 {
     /**
      * Array with children resources of the directory, used for the iterator.
      *
-     * @var \vcsResource[]
+     * @var \Vcs\Resource[]
      */
     protected $resources = null;
 
@@ -115,7 +117,7 @@ class Directory extends \vcsResource implements \vcsDirectory
     /**
      * Returns the children for this instance.
      *
-     * @return \vcsDirectory
+     * @return \Vcs\Directory
      */
     public function getChildren()
     {
@@ -139,7 +141,7 @@ class Directory extends \vcsResource implements \vcsDirectory
             $this->initializeResouces();
         }
 
-        return current( $this->resources ) instanceof \vcsDirectory;
+        return current( $this->resources ) instanceof \Vcs\Directory;
     }
 
     /**

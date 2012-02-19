@@ -23,7 +23,13 @@
 
 namespace Vcs\Wrapper\SvnExt;
 
+use \Vcs\Authored;
 use \Vcs\Cache;
+use \Vcs\Diffable;
+use \Vcs\LogEntry;
+use \Vcs\Logged;
+use \Vcs\Versioned;
+use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -31,7 +37,7 @@ use \Vcs\Diff\Parser\UnifiedParser;
  *
  * @version $Revision$
  */
-abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAuthored, \vcsLogged, \vcsDiffable
+abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Logged, Diffable
 {
     /**
      * Current version of the given resource
@@ -75,7 +81,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      *
      * Get the full log for the current resource up tu the current revision
      *
-     * @return \vcsLogEntry[]
+     * @return \Vcs\LogEntry[]
      */
     protected function getResourceLog()
     {
@@ -86,7 +92,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             $log = array();
             foreach ( $svnLog as $nr => $entry )
             {
-                $log[$entry['rev']] = new \vcsLogEntry(
+                $log[$entry['rev']] = new \Vcs\LogEntry(
                     $entry['rev'],
                     $entry['author'],
                     $entry['msg'],
@@ -193,7 +199,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
         if ( !isset( $log[$version] ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version]->author;
@@ -203,7 +209,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      * Get full revision log
      *
      * Return the full revision log for the given resource. The revision log
-     * should be returned as an array of \vcsLogEntry objects.
+     * should be returned as an array of {@link \Vcs\LogEntry} objects.
      *
      * @return array
      */
@@ -218,7 +224,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      * Get the revision log entry for the spcified version.
      * 
      * @param string $version
-     * @return \vcsLogEntry
+     * @return \Vcs\LogEntry
      */
     public function getLogEntry( $version )
     {
@@ -226,7 +232,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
         if ( !isset( $log[$version] ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version];
@@ -241,7 +247,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      *
      * @param string $version 
      * @param string $current 
-     * @return \vcsResource
+     * @return \Vcs\Resource
      */
     public function getDiff( $version, $current = null )
     {

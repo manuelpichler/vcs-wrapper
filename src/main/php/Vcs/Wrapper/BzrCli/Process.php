@@ -76,12 +76,12 @@ class Process extends pbsSystemProcess
 
         if ( !preg_match( '/\Bazaar \(bzr\) ([0-9.]*)/', $process->stdoutOutput, $match ) )
         {
-            throw new \vcsRuntimeException( 'Could not determine Bazaar version.' );
+            throw new \RuntimeException( 'Could not determine Bazaar version.' );
         }
 
         if ( version_compare( $match[1], '1.1', '<' ) )
         {
-            throw new \vcsRuntimeException( 'Bazaar is required in a minimum version of 1.1.' );
+            throw new \RuntimeException( 'Bazaar is required in a minimum version of 1.1.' );
         }
 
         $process = new \pbsSystemProcess( 'bzr' );
@@ -90,7 +90,7 @@ class Process extends pbsSystemProcess
 
         if ( strpos( $process->stdoutOutput, 'xmloutput' ) === false )
         {
-            throw new \vcsRuntimeException( 'Missing required bazaar pluging "xmloutput".' );
+            throw new \RuntimeException( 'Missing required bazaar pluging "xmloutput".' );
         }
 
         return self::$checked = true;

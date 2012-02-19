@@ -74,7 +74,7 @@ class Process extends \pbsSystemProcess
 
         if ( !preg_match( '(\\d+(?:\.\\d+)+)', $process->stdoutOutput, $match ) )
         {
-            throw new vcsRuntimeException( 'Could not determine GIT version.' );
+            throw new \RuntimeException( 'Could not determine GIT version.' );
         }
 
         if ( version_compare( $match[0], '1.6', '>=' ) )
@@ -82,7 +82,7 @@ class Process extends \pbsSystemProcess
             return self::$checked = true;
         }
 
-        throw new vcsRuntimeException( 'Git is required in a minimum version of 1.6.' );
+        throw new \RuntimeException( 'Git is required in a minimum version of 1.6.' );
     }
 }
 

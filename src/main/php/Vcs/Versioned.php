@@ -17,11 +17,11 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
+
+namespace Vcs;
 
 /*
  * Interface for versioned resources.
@@ -30,7 +30,7 @@
  * the version control system. It allows access to the current version of a
  * resource and also to contents in later versions of a resource.
  */
-interface vcsVersioned
+interface Versioned
 {
     /**
      * Get version string

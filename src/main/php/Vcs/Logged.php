@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper base metadata cache metadata handler
+ * PHP VCS wrapper logged interface
  *
  * This file is part of vcs-wrapper.
  *
@@ -21,25 +21,35 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Vcs\Cache;
+namespace Vcs;
 
-use \LogicException;
-
-/**
- * Exception thrown when a value is passed to the cache, which is not
- * cacheable.
+/*
+ * Interface for resources with a log available.
  *
- * @version $Revision$
+ * This interface should be implemented by resources which are versioned in
+ * the version control system. It allows access to the current version of a
+ * resource and also to contents in later versions of a resource.
  */
-class NotCacheableException extends LogicException
+interface Logged extends Versioned
 {
     /**
-     * Construct exception
+     * Get full revision log
      *
-     * @param mixed $value
+     * Return the full revision log for the given resource. The revision log
+     * should be returned as an array of {@link \Vcs\LogEntry} objects.
+     *
+     * @return array
      */
-    public function __construct( $value )
-    {
-        parent::__construct( 'Value of type ' . gettype( $value ) . ' cannot be cached. Only arrays, scalar values and objects implementing Cacheable are allowed.' );
-    }
+    public function getLog();
+
+    /**
+     * Get revision log entry
+     *
+     * Get the revision log entry for the spcified version.
+     * 
+     * @param string $version
+     * @return \Vcs\LogEntry
+     */
+    public function getLogEntry( $version );
 }
+

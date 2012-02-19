@@ -23,7 +23,13 @@
 
 namespace Vcs\Wrapper\BzrCli;
 
+use \Vcs\Authored;
 use \Vcs\Cache;
+use \Vcs\Diffable;
+use \Vcs\LogEntry;
+use \Vcs\Logged;
+use \Vcs\Versioned;
+use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -31,7 +37,7 @@ use \Vcs\Diff\Parser\UnifiedParser;
  *
  * @version $Revision$
  **/
-abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAuthored, \vcsLogged, \vcsDiffable
+abstract class Resource extends \Vcs\Resource implements Versioned, Authored, Logged, Diffable
 {
     /**
      * Current version of the given resource
@@ -46,7 +52,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      * Get the base information, like version, author, etc for the current
      * resource in the current version.
      *
-     * @return \vcsLogEntry
+     * @return \Vcs\LogEntry
      */
     protected function getResourceInfo() 
     {
@@ -108,7 +114,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
                 $date = strtotime( $entry->timestamp );
                 $desc = $entry->message;
                 
-                $newEntry = new \vcsLogEntry( $revno, $author, $desc, $date );
+                $newEntry = new \Vcs\LogEntry( $revno, $author, $desc, $date );
                 $log[(string) $revno] = $newEntry;
             }
             $last = end( $log );
@@ -201,7 +207,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
         if ( !isset( $log[$version] ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version]->author;
@@ -229,7 +235,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
         if ( !isset( $log[$version] ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         return $log[$version];
@@ -245,7 +251,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         $diff = Cache::get( $this->path, $version, 'diff' );

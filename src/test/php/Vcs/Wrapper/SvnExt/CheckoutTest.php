@@ -11,6 +11,7 @@ namespace Vcs\Wrapper\SvnExt;
 use Vcs\TestCase;
 
 use \Vcs\Cache;
+use \Vcs\LogEntry;
 use \Vcs\Wrapper\SvnCli\Process;
 
 /**
@@ -34,7 +35,7 @@ class CheckoutTest extends TestCase
 
     /**
      * @return void
-     * @expectedException \vcsCheckoutFailedException
+     * @expectedException \Vcs\CheckoutFailedException
      */
     public function testInitializeInvalidCheckout()
     {
@@ -169,37 +170,37 @@ class CheckoutTest extends TestCase
 
         $this->assertEquals(
             array(
-                1 => new \vcsLogEntry(
+                1 => new LogEntry(
                     '1',
                     'kore',
                     "- Added test file\n",
                     1226412609
                 ),
-                2 => new \vcsLogEntry(
+                2 => new LogEntry(
                     '2',
                     'kore',
                     "- Added some test directories\n",
                     1226412647
                 ),
-                3 => new \vcsLogEntry(
+                3 => new LogEntry(
                     '3',
                     'kore',
                     "- Renamed directory\n",
                     1226412664
                 ),
-                4 => new \vcsLogEntry(
+                4 => new LogEntry(
                     '4',
                     'kore',
                     "- Added file in subdir\n",
                     1226592944
                 ),
-                5 => new \vcsLogEntry(
+                5 => new LogEntry(
                     '5',
                     'kore',
                     "- Added another line to file\n",
                     1226595170
                 ),
-                6 => new \vcsLogEntry(
+                6 => new LogEntry(
                     '6',
                     'kore',
                     "# Added binary to repository\n",
@@ -216,7 +217,7 @@ class CheckoutTest extends TestCase
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
 
         $this->assertEquals(
-            new \vcsLogEntry(
+            new LogEntry(
                 '2',
                 'kore',
                 "- Added some test directories\n",
@@ -226,16 +227,15 @@ class CheckoutTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetUnknownLogEntry()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-
-        try {
-            $repository->getLogEntry( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $repository->getLogEntry( "no_such_version" );
     }
 
     public function testIterateCheckoutContents()
@@ -277,18 +277,15 @@ class CheckoutTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\FileNotFoundException
+     */
     public function testGetInvalid()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'svn' ) );
-
-        try
-        {
-            $repository->get( '/../' );
-            $this->fail( 'Expected \vcsFileNotFoundException.' );
-        }
-        catch ( \vcsFileNotFoundException $e )
-        { /* Expected */ }
+        $repository->get( '/../' );
     }
 
     public function testGetDirectory()

@@ -74,14 +74,14 @@ class Process extends \pbsSystemProcess
 
         if ( !preg_match( '/\(version (.*)\)/', $process->stdoutOutput, $match ) )
         {
-            throw new \vcsRuntimeException( 'Could not determine Mercurial version.' );
+            throw new \RuntimeException( 'Could not determine Mercurial version.' );
         }
         if ( version_compare( $match[1], '1.3', '>=' ) )
         {
             return self::$checked = true;
         }
 
-        throw new \vcsRuntimeException( 'Mercurial is required in a minimum version of 1.3.' );
+        throw new \RuntimeException( 'Mercurial is required in a minimum version of 1.3.' );
     }
 }
 

@@ -154,18 +154,15 @@ class CheckoutTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\FileNotFoundException
+     */
     public function testGetInvalid()
     {
         $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs#milestone' );
-
-        try
-        {
-            $checkout->get( '/../' );
-            $this->fail( 'Expected \vcsFileNotFoundException.' );
-        }
-        catch ( \vcsFileNotFoundException $e )
-        { /* Expected */ }
+        $checkout->get( '/../' );
     }
 
     public function testGetDirectory()

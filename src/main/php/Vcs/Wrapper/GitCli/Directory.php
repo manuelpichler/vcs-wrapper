@@ -28,7 +28,7 @@ namespace Vcs\Wrapper\GitCli;
  *
  * @version $Revision$
  */
-class Directory extends Resource implements \vcsDirectory
+class Directory extends Resource implements \Vcs\Directory
 {
     /**
      * Array with children resources of the directory, used for the iterator.
@@ -148,7 +148,7 @@ class Directory extends Resource implements \vcsDirectory
     /**
      * Returns the children for this instance.
      *
-     * @return \vcsDirectory
+     * @return \Vcs\Directory
      */
     public function getChildren()
     {
@@ -172,7 +172,7 @@ class Directory extends Resource implements \vcsDirectory
             $this->initializeResouces();
         }
 
-        return current( $this->resources ) instanceof \vcsDirectory;
+        return current( $this->resources ) instanceof \Vcs\Directory;
     }
 }
 

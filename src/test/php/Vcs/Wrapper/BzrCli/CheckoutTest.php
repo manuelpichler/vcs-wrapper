@@ -11,6 +11,7 @@ namespace Vcs\Wrapper\BzrCli;
 use \Vcs\TestCase;
 
 use \Vcs\Cache;
+use \Vcs\LogEntry;
 
 /**
  * @group bazaar
@@ -157,10 +158,10 @@ class CheckoutTest extends TestCase
 
         $this->assertEquals(
             array(
-                "1" => new \vcsLogEntry(
+                "1" => new LogEntry(
                     "1", "richard <richard@shaoden>", "Initial commit", 1276559935
                     ),
-                "2" => new \vcsLogEntry(
+                "2" => new LogEntry(
                     "2", "Richard Bateman <taxilian@gmail.com>", "Second commit", 1276563712
                     ),
             ),
@@ -174,23 +175,22 @@ class CheckoutTest extends TestCase
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
 
         $this->assertEquals(
-            new \vcsLogEntry(
+            new LogEntry(
                 "1", "richard <richard@shaoden>", "Initial commit", 1276559935
             ),
             $repository->getLogEntry( "1" )
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetUnknownLogEntry()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'bzr' ) );
-
-        try {
-            $repository->getLogEntry( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $repository->getLogEntry( "no_such_version" );
     }
 
     public function testIterateCheckoutContents()
@@ -233,7 +233,7 @@ class CheckoutTest extends TestCase
 
     /**
      * @return void
-     * @expectedException \vcsFileNotFoundException
+     * @expectedException \Vcs\FileNotFoundException
      */
     public function testGetInvalid()
     {
