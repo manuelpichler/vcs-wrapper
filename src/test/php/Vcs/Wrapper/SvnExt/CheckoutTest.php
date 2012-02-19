@@ -82,8 +82,10 @@ class CheckoutTest extends TestCase
         $svn = new \vcsSvnCliProcess();
         $svn->argument( 'commit' )->argument( $file )->argument( '-m' )->argument( '- Test commit.' )->execute();
 
+        $this->assertTrue( $checkin->update(), "Checkin repository should have had an update available." );
+
         $this->assertFileNotExists( $this->tempDir . '/co/another' );
-        $checkout->update();
+        $this->assertTrue( $checkout->update(), "Checkout repository should have had an update available." );
         $this->assertFileExists( $this->tempDir . '/co/another' );
     }
 
