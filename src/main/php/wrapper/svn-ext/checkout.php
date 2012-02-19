@@ -77,6 +77,7 @@ class vcsSvnExtCheckout extends vcsSvnExtDirectory implements vcsCheckout
             throw new vcsCheckoutFailedException( $url );
         }
 
+        $this->currentVersion = $this->getVersionString();
     }
 
     /**
