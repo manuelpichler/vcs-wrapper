@@ -81,11 +81,6 @@ spl_autoload_register( function( $class ) {
         'vcsBlameable'                                     => 'interfaces/blameable.php',
         'pbsSystemProcess'                                 => 'external/system_process/systemProcess.php',
         'vcsFetchable'                                     => 'interfaces/fetchable.php',
-        'vcsSvnExtResource'                                => 'wrapper/svn-ext/resource.php',
-        'vcsSvnExtDirectory'                               => 'wrapper/svn-ext/directory.php',
-        'vcsSvnExtCheckout'                                => 'wrapper/svn-ext/checkout.php',
-        'vcsSvnExtFile'                                    => 'wrapper/svn-ext/file.php',
-        'vcsTestCase'                                      => '../../test/php/base_test.php',
     );
 
     if ( isset( $paths[$class] ) )
