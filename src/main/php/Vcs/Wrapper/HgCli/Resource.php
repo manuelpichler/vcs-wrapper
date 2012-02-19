@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\HgCli;
 
+use \Vcs\Cache;
+
 /**
  * Resource implementation vor Hg Cli wrapper
  *
@@ -49,7 +51,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
     {
         if ( $this->currentVersion !== null )
         {
-            $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' );
+            $info = Cache::get( $this->path, $this->currentVersion, 'info' );
         }
 
         if ( $this->currentVersion === null ||
@@ -59,7 +61,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
             // Fecth for specified version, if set
             $info = $this->currentVersion !== null ? $log[$this->currentVersion] : end( $log );
-            \vcsCache::cache( $this->path, $this->currentVersion = (string) $info->version, 'info', $info );
+            Cache::cache( $this->path, $this->currentVersion = (string) $info->version, 'info', $info );
         }
 
         return $info;
@@ -72,7 +74,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      */
     protected function getResourceLog() 
     {
-        $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' );
+        $log = Cache::get( $this->path, $this->currentVersion, 'log' );
         if ( $log === false )
         {
             // Refetch the basic logrmation, and cache it.
@@ -123,7 +125,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
             $this->currentVersion = (string) $last->version;
             // Cache extracted data
-            \vcsCache::cache( $this->path, $this->currentVersion, 'log', $log );
+            Cache::cache( $this->path, $this->currentVersion, 'log', $log );
         }
 
         return $log;

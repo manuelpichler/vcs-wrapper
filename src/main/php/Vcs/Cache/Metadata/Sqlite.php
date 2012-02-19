@@ -17,20 +17,20 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Cache\Metadata;
+
+use \Vcs\Cache\Metadata;
+
 /**
  * SQLite Cache metadata handler.
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  */
-class vcsCacheSqliteMetaData extends vcsCacheMetaData
+class Sqlite extends Metadata
 {
     /**
      * Database connection
@@ -42,8 +42,7 @@ class vcsCacheSqliteMetaData extends vcsCacheMetaData
     /**
      * Construct cache from cache storage root
      * 
-     * @param string $root 
-     * @return void
+     * @param string $root
      */
     public function __construct( $root )
     {
@@ -60,7 +59,7 @@ class vcsCacheSqliteMetaData extends vcsCacheMetaData
 
             // Create the table with appropriate indexes, if the table does not
             // yet exist
-            $db = new SQLite3( $dbFile );
+            $db = new \SQLite3( $dbFile );
             $db->query( 'CREATE TABLE metadata (
                 path TEXT PRIMARY KEY,
                 size NUMERIC,
@@ -70,7 +69,7 @@ class vcsCacheSqliteMetaData extends vcsCacheMetaData
             $db->query( 'CREATE INDEX accessed ON metadata ( accessed )' );
         }
 
-        $this->db = new SQLite3( $dbFile );
+        $this->db = new \SQLite3( $dbFile );
     }
 
     /**

@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\CvsCli;
 
+use \Vcs\Cache;
+
 /**
  * Resource implementation vor CVS Cli wrapper
  *
@@ -48,7 +50,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
     protected function getResourceInfo()
     {
         if ( ( $this->currentVersion !== null ) &&
-             ( ( $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) !== false ) )
+             ( ( $info = Cache::get( $this->path, $this->currentVersion, 'info' ) ) !== false ) )
         {
             return $info;
         }
@@ -66,7 +68,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
         }
 
         $this->currentVersion = $info->version;
-        \vcsCache::cache( $this->path, $this->currentVersion, 'info', $info );
+        Cache::cache( $this->path, $this->currentVersion, 'info', $info );
 
         return $info;
     }
@@ -80,7 +82,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      */
     protected function getResourceLog()
     {
-        if ( ( $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) !== false )
+        if ( ( $log = Cache::get( $this->path, $this->currentVersion, 'log' ) ) !== false )
         {
             return $log;
         }
@@ -134,7 +136,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
         $last = end( $log );
 
         $this->currentVersion = $last->version;
-        \vcsCache::cache( $this->path, $this->currentVersion, 'log', $log );
+        Cache::cache( $this->path, $this->currentVersion, 'log', $log );
 
         return $log;
     }

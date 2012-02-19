@@ -23,6 +23,7 @@
 
 namespace Vcs\Wrapper\CvsCli;
 
+use \Vcs\Cache;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -94,7 +95,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $blame = \vcsCache::get( $this->path, $version, 'blame' ) ) !== false )
+        if ( ( $blame = Cache::get( $this->path, $version, 'blame' ) ) !== false )
         {
             return $blame;
         }
@@ -133,7 +134,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
             );
         }
 
-        \vcsCache::cache( $this->path, $version, 'blame', $blame );
+        Cache::cache( $this->path, $version, 'blame', $blame );
 
         return $blame;
     }
@@ -154,7 +155,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $content = \vcsCache::get( $this->path, $version, 'content' ) ) === false )
+        if ( ( $content = Cache::get( $this->path, $version, 'content' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
             $process = new Process();
@@ -170,7 +171,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
 
             $output  = $process->stdoutOutput;
             $content = ltrim( substr( $output, strpos( $output, '***************' ) + 15 ) );
-            \vcsCache::cache( $this->path, $version, 'content', $content );
+            Cache::cache( $this->path, $version, 'content', $content );
         }
 
         return $content;
@@ -191,7 +192,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
     {
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) !== false )
+        if ( ( $diff = Cache::get( $this->path, $version, 'diff' ) ) !== false )
         {
             return $diff;
         }
@@ -215,7 +216,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
 
         $parser = new UnifiedParser();
         $diff   = $parser->parseString( $process->stdoutOutput );
-        \vcsCache::cache( $this->path, $version, 'diff', $diff );
+        Cache::cache( $this->path, $version, 'diff', $diff );
 
         return $diff;
     }

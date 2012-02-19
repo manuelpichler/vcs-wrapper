@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\SvnExt;
 
+use \Vcs\Cache;
+
 /**
  * File implementation vor SVN Ext wrapper
  *
@@ -98,7 +100,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $blame = \vcsCache::get( $this->path, $version, 'blame' ) ) === false )
+        if ( ( $blame = Cache::get( $this->path, $version, 'blame' ) ) === false )
         {
             // Silence warning about binary files, and just use the return
             // value. There is no good way to know this beforehand. The
@@ -120,7 +122,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
                 }
             }
 
-            \vcsCache::cache( $this->path, $version, 'blame', $blame );
+            Cache::cache( $this->path, $version, 'blame', $blame );
         }
 
         return $blame;
@@ -141,11 +143,11 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $content = \vcsCache::get( $this->path, $version, 'content' ) ) === false )
+        if ( ( $content = Cache::get( $this->path, $version, 'content' ) ) === false )
         {
             // Execute command
             $content = svn_cat( $this->root . $this->path, $version );
-            \vcsCache::cache( $this->path, $version, 'content', $content );
+            Cache::cache( $this->path, $version, 'content', $content );
         }
 
         return $content;

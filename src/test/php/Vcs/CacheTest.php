@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 
-namespace Vcs\Cache;
+namespace Vcs;
 
 use \Vcs\TestCase;
 
@@ -17,18 +17,18 @@ class CacheTest extends TestCase
 {
     /**
      * @return void
-     * @expectedException \vcsCacheNotInitializedException
+     * @expectedException \Vcs\Cache\NotInitializedException
      */
     public function testCacheNotInitialized()
     {
-        \vcsCache::get( '/foo', 1, 'data' );
+        Cache::get( '/foo', 1, 'data' );
     }
 
     public function testValueNotInCache()
     {
-        \vcsCache::initialize( $this->tempDir, 100, .8 );
+        Cache::initialize( $this->tempDir, 100, .8 );
         $this->assertFalse(
-            \vcsCache::get( '/foo', 1, 'data' ),
+            Cache::get( '/foo', 1, 'data' ),
             'Expected false, because item should not be in cache.'
         );
     }
@@ -36,18 +36,18 @@ class CacheTest extends TestCase
     public function testCacheScalarValues()
     {
         $values = array( 1, .1, 'foo', true );
-        \vcsCache::initialize( $this->tempDir, 100, .8 );
+        Cache::initialize( $this->tempDir, 100, .8 );
 
         foreach ( $values as $nr => $value )
         {
-            \vcsCache::cache( '/foo', (string) $nr, 'data', $value );
+            Cache::cache( '/foo', (string) $nr, 'data', $value );
         }
 
         foreach ( $values as $nr => $value )
         {
             $this->assertSame(
                 $value,
-                \vcsCache::get( '/foo', $nr, 'data' ),
+                Cache::get( '/foo', $nr, 'data' ),
                 'Wrong item returned from cache'
             );
         }
@@ -56,34 +56,34 @@ class CacheTest extends TestCase
     public function testCacheArray()
     {
         $values = array( 1, .1, 'foo', true );
-        \vcsCache::initialize( $this->tempDir, 100, .8 );
-        \vcsCache::cache( '/foo', '1', 'data', $values );
+        Cache::initialize( $this->tempDir, 100, .8 );
+        Cache::cache( '/foo', '1', 'data', $values );
 
         $this->assertSame(
             $values,
-            \vcsCache::get( '/foo', '1', 'data' ),
+            Cache::get( '/foo', '1', 'data' ),
             'Wrong item returned from cache'
         );
     }
 
     /**
      * @return void
-     * @expectedException \vcsNotCacheableException
+     * @expectedException \Vcs\Cache\NotCacheableException
      */
     public function testInvalidCacheItem()
     {
-        \vcsCache::initialize( $this->tempDir, 100, .8 );
-        \vcsCache::cache( '/foo', '1', 'data', $this );
+        Cache::initialize( $this->tempDir, 100, .8 );
+        Cache::cache( '/foo', '1', 'data', $this );
     }
 
     public function testCacheCacheableObject()
     {
-        \vcsCache::initialize( $this->tempDir, 100, .8 );
-        \vcsCache::cache( '/foo', '1', 'data', $object = new vcsTestCacheableObject( 'foo' ) );
+        Cache::initialize( $this->tempDir, 100, .8 );
+        Cache::cache( '/foo', '1', 'data', $object = new vcsTestCacheableObject( 'foo' ) );
 
         $this->assertEquals(
             $object,
-            \vcsCache::get( '/foo', '1', 'data' ),
+            Cache::get( '/foo', '1', 'data' ),
             'Wrong item returned from cache'
         );
     }
@@ -91,34 +91,34 @@ class CacheTest extends TestCase
     public function testPurgeOldCacheEntries()
     {
         $values = array( 1, .1, 'foo', true );
-        \vcsCache::initialize( $this->tempDir, 50, .8 );
+        Cache::initialize( $this->tempDir, 50, .8 );
 
         foreach ( $values as $nr => $value )
         {
-            \vcsCache::cache( '/foo', (string) $nr, 'data', $value );
+            Cache::cache( '/foo', (string) $nr, 'data', $value );
         }
-        \vcsCache::forceCleanup();
+        Cache::forceCleanup();
 
         $this->assertFalse(
-            \vcsCache::get( '/foo', 0, 'data' ),
+            Cache::get( '/foo', 0, 'data' ),
             'Item 0 is not expected to be in the cache anymore.'
         );
         $this->assertFalse(
-            \vcsCache::get( '/foo', 1, 'data' ),
+            Cache::get( '/foo', 1, 'data' ),
             'Item 1 is not expected to be in the cache anymore.'
         );
         $this->assertFalse(
-            \vcsCache::get( '/foo', 2, 'data' ),
+            Cache::get( '/foo', 2, 'data' ),
             'Item 2 is not expected to be in the cache anymore.'
         );
         $this->assertTrue(
-            \vcsCache::get( '/foo', 3, 'data' ),
+            Cache::get( '/foo', 3, 'data' ),
             'Item 3 is still expected to be in the cache.'
         );
     }
 }
 
-class vcsTestCacheableObject implements \arbitCacheable
+class vcsTestCacheableObject implements \Vcs\Cache\Cacheable
 {
     public $foo = null;
     public function __construct( $foo )

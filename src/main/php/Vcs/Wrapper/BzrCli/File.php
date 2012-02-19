@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\BzrCli;
 
+use \Vcs\Cache;
+
 /**
  * File implementation vor Bazaar Cli wrapper
  *
@@ -91,11 +93,9 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        $blame = \vcsCache::get( $this->path, $version, 'blame' );
+        $blame = Cache::get( $this->path, $version, 'blame' );
         if ( $blame === false )
         {
-            $shortHashCache = array();
-
             // Refetch the basic blamermation, and cache it.
             $process = new Process();
             $process->workingDirectory( $this->root );
@@ -132,7 +132,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
                 return false;
             }
 
-            \vcsCache::cache( $this->path, $version, 'blame', $blame );
+            Cache::cache( $this->path, $version, 'blame', $blame );
         }
 
         return $blame;

@@ -10,6 +10,7 @@ namespace Vcs\Wrapper\SvnExt;
 
 use Vcs\TestCase;
 
+use \Vcs\Cache;
 use \Vcs\Wrapper\SvnCli\Process;
 
 /**
@@ -28,7 +29,7 @@ class CheckoutTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     /**

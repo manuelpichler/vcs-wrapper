@@ -10,6 +10,7 @@ namespace Vcs\Wrapper\BzrCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Cache;
 use \Vcs\Diff\Chunk;
 use \Vcs\Diff\Line;
 
@@ -37,7 +38,7 @@ class FileTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
 
         // Store default timezone
         $this->timezone = ini_get( 'date.timezone' );

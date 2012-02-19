@@ -17,20 +17,23 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Cache\Metadata;
+
+use \RecursiveDirectoryIterator;
+use \RecursiveIteratorIterator;
+
+use \Vcs\Cache\Metadata;
+
 /**
  * File system Cache metadata handler.
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  */
-class vcsCacheFileSystemMetaData extends vcsCacheMetaData
+class FileSystem extends Metadata
 {
     /**
      * Filename of file, which stores the overall cache size.

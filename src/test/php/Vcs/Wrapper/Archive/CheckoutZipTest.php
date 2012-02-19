@@ -10,6 +10,7 @@ namespace Vcs\Wrapper\Archive;
 
 use \Vcs\TestCase;
 
+use \Vcs\Cache;
 use \Vcs\Wrapper\Archive\File;
 use \Vcs\Wrapper\Archive\Directory;
 use \Vcs\Wrapper\Archive\Checkout\Zip;
@@ -30,7 +31,7 @@ class CheckoutZipTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     /**

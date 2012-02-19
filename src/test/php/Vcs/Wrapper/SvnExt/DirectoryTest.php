@@ -11,6 +11,7 @@ namespace Vcs\Wrapper\SvnExt;
 use Vcs\TestCase;
 use \RecursiveIteratorIterator;
 
+use \Vcs\Cache;
 use \Vcs\Diff\Chunk;
 use \Vcs\Diff\Line;
 
@@ -30,7 +31,7 @@ class DirectoryTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     public function testIterateRootDirContents()

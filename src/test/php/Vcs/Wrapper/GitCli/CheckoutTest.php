@@ -10,6 +10,8 @@ namespace Vcs\Wrapper\GitCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Cache;
+
 /**
  * Tests for the SQLite cache meta data handler
  */
@@ -26,7 +28,7 @@ class CheckoutTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     /**
