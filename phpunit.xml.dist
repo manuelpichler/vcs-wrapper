@@ -2,7 +2,7 @@
 <phpunit bootstrap="src/main/php/autoload.php">
     <testsuites>
         <testsuite name="VCSWrapper TestSuite">
-            <directory suffix="_test.php">src/test</directory>
+            <directory>src/test</directory>
         </testsuite>
     </testsuites>
     <filter>
