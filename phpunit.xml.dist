@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="src/main/php/autoload.php">
+    <testsuites>
+        <testsuite name="VCSWrapper TestSuite">
+            <directory suffix="_test.php">src/test</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src/main</directory>
+        </whitelist>
+    </filter>
+</phpunit>
