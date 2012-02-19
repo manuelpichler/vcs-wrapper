@@ -6,42 +6,28 @@
  * @license GPLv3
  */
 
+namespace Vcs\Diff;
+
+use \Vcs\TestCase;
+
 /**
- * Tests for the Cunified diff parser
+ * Tests for the unified diff parser
  */
-class vcsUnifiedDiffParserTests extends vcsTestCase
+class UnifiedDiffParserTest extends TestCase
 {
-    /**
-     * Array with diffs in dataprovider.
-     *
-     * @param array
-     */
-    protected static $diffs = null;
-
-    /**
-     * Return test suite
-     *
-     * @return PHPUnit_Framework_TestSuite
-     */
-	public static function suite()
-	{
-		return new PHPUnit_Framework_TestSuite( __CLASS__ );
-	}
-
     public static function getUnifiedDiffFiles()
     {
-        if ( self::$diffs !== null ) return $diffs;
-
-        $files = glob( dirname( __FILE__ ) . '/../data/diff/unified/s_*.diff' );
+        $diffs = array();
+        $files = glob( __DIR__ . '/../../../resources/diff/unified/s_*.diff' );
         foreach ( $files as $file )
         {
-            self::$diffs[] = array(
+            $diffs[] = array(
                 $file,
                 substr( $file, 0, -4 ) . 'php'
             );
         }
 
-        return self::$diffs;
+        return $diffs;
     }
 
     /**
@@ -54,7 +40,7 @@ class vcsUnifiedDiffParserTests extends vcsTestCase
             $this->markTestIncomplete( "Comparision file $to does not yet exist." );
         }
 
-        $parser = new vcsUnifiedDiffParser();
+        $parser = new \vcsUnifiedDiffParser();
         $diff = $parser->parseFile( $from );
 
         // Store diff result in temp folder for manual check in case of failure
