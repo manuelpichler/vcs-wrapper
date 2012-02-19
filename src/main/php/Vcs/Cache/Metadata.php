@@ -17,11 +17,11 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
+
+namespace Vcs\Cache;
 
 /**
  * Cache metadata handler base class
@@ -29,11 +29,10 @@
  * Base class for storing cache meta data, required for a basic size limited
  * LRU cache.
  *
- * @package VCSWrapper
  * @subpackage Cache
  * @version $Revision$
  */
-abstract class vcsCacheMetaData
+abstract class Metadata
 {
     /**
      * Root of cache storage
@@ -45,8 +44,7 @@ abstract class vcsCacheMetaData
     /**
      * Construct cache from cache storage root
      * 
-     * @param string $root 
-     * @return void
+     * @param string $root
      */
     public function __construct( $root )
     {
@@ -96,7 +94,7 @@ abstract class vcsCacheMetaData
      * is only filled up to $rate percentage.
      * 
      * @param int $size 
-     * @param flaot $rate 
+     * @param float $rate
      * @return void
      */
     abstract public function cleanup( $size, $rate );

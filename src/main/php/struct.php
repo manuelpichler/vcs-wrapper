@@ -23,6 +23,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+use \Vcs\Cache\Cacheable;
+
 /**
  * Basic struct class with optional value validation when the __set method gets
  * overwritten in the child classes.
@@ -31,7 +33,7 @@
  * @subpackage Core
  * @version $Revision$
  */
-class vcsBaseStruct implements arbitCacheable
+class vcsBaseStruct implements Cacheable
 {
     /**
      * Array containing the structs properties.

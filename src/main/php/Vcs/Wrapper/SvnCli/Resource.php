@@ -23,6 +23,7 @@
 
 namespace Vcs\Wrapper\SvnCli;
 
+use \Vcs\Cache;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -80,12 +81,12 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      * Get the base information, like version, author, etc for the current
      * resource in the current version.
      *
-     * @return \arbitXml
+     * @return array
      */
     protected function getResourceInfo()
     {
         if ( ( $this->currentVersion === null ) ||
-             ( ( $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
+             ( ( $info = Cache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
         {
             // Refetch the basic information, and cache it.
             $process = new Process( 'svn', $this->username, $this->password );
@@ -98,10 +99,14 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             }
 
             // Execute info command
-            $return = $process->argument( 'info' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'info' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
 
-            $info = \arbitXml::loadString( $process->stdoutOutput );
-            \vcsCache::cache( $this->path, $this->currentVersion = (string) $info->entry[0]->commit[0]['revision'], 'info', $info );
+            $info = simplexml_load_string( $process->stdoutOutput );
+            $info = array(
+                'revision'  =>  (string) $info->entry[0]->commit[0]['revision'],
+                'author'    =>  (string) $info->entry[0]->commit[0]->author
+            );
+            Cache::cache( $this->path, $this->currentVersion = (string) $info['revision'], 'info', $info );
         }
 
         return $info;
@@ -112,11 +117,11 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      *
      * Get the full log for the current resource up tu the current revision
      *
-     * @return \arbitXml
+     * @return \vcsLogEntry[]
      */
     protected function getResourceLog()
     {
-        if ( ( $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
+        if ( ( $log = Cache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
         {
             // Refetch the basic logrmation, and cache it.
             $process = new Process( 'svn', $this->username, $this->password );
@@ -129,17 +134,17 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             }
 
             // Execute logr command
-            $return = $process->argument( 'log' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'log' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
 
             // Transform XML into object array
-            $xmlLog = \arbitXml::loadString( $process->stdoutOutput );
+            $xmlLog = simplexml_load_string( $process->stdoutOutput );
             $log    = array();
             foreach ( $xmlLog->logentry as $entry )
             {
                 $log[(string) $entry['revision']] = new \vcsLogEntry(
-                    $entry['revision'],
-                    $entry->author,
-                    $entry->msg,
+                    (string) $entry['revision'],
+                    (string) $entry->author,
+                    (string) $entry->msg,
                     strtotime( $entry->date )
                 );
             }
@@ -147,7 +152,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             $last = end( $log );
 
             // Cache extracted data
-            \vcsCache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
+            Cache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
         }
 
         return $log;
@@ -163,7 +168,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      */
     protected function getResourceProperty( $property )
     {
-        if ( ( $value = \vcsCache::get( $this->path, $this->currentVersion, $property ) ) === false )
+        if ( ( $value = Cache::get( $this->path, $this->currentVersion, $property ) ) === false )
         {
             // Refetch the basic mimeTypermation, and cache it.
             $process = new Process( 'svn', $this->username, $this->password );
@@ -175,10 +180,10 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             }
 
             // Execute mimeTyper command
-            $return = $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $process->argument( 'propget' )->argument( 'svn:' . $property )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
 
             $value = trim( $process->stdoutOutput );
-            \vcsCache::cache( $this->path, $this->currentVersion, $property, $value );
+            Cache::cache( $this->path, $this->currentVersion, $property, $value );
         }
 
         return $value;
@@ -253,7 +258,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
         if ( $version === null )
         {
             $info = $this->getResourceInfo();
-            return (string) $info->entry[0]->commit[0]->author;
+            return $info['author'];
         }
 
         $version = $version === null ? $this->getVersionString() : $version;
@@ -315,7 +320,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
     {
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) === false )
+        if ( ( $diff = Cache::get( $this->path, $version, 'diff' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
             $process = new Process( 'svn', $this->username, $this->password );
@@ -325,7 +330,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             $return = $process->argument( 'diff' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
             $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
-            \vcsCache::cache( $this->path, $version, 'diff', $diff );
+            Cache::cache( $this->path, $version, 'diff', $diff );
         }
 
         foreach ( $diff as $fileDiff )

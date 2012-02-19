@@ -66,7 +66,7 @@ class Checkout extends Directory implements \vcsCheckout
         $url = preg_replace( '(^file://([A-Za-z]):)', 'file:///\\1:', $url );
 
         $process = new Process( 'svn', $this->username, $this->password );
-        $return = $process->argument( 'checkout' )->argument( str_replace( '\\', '/', $url ) )->argument( new \pbsPathArgument( $this->root ) )->execute();
+        $process->argument( 'checkout' )->argument( str_replace( '\\', '/', $url ) )->argument( new \pbsPathArgument( $this->root ) )->execute();
 
         // Cache basic revision information for checkout and update
         // currentVersion property.

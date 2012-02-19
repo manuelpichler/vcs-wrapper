@@ -6,47 +6,65 @@
  * @license GPLv3
  */
 
-namespace Vcs\Cache;
+namespace Vcs\Cache\Metadata;
 
 use \Vcs\TestCase;
 
 /**
  * Tests for the SQLite cache meta data handler
  */
-class FileSystemCacheMetaDataTest extends TestCase
+class SqliteTest extends TestCase
 {
+    protected function setUp()
+    {
+        if ( !extension_loaded( 'sqlite3' ) )
+        {
+            $this->markTestSkipped( 'sqlite3 extension required for this test.' );
+        }
+
+        parent::setUp();
+    }
+
     public function testStoreCreationDate()
     {
-        $cacheMetaData = new \vcsCacheFileSystemMetaData( $this->tempDir );
+        $cacheMetaData = new Sqlite( $this->tempDir );
 
-        file_put_contents( $this->tempDir . ( $path = '/foo' ), '0123456789' );
-        $cacheMetaData->created( $path, 10 );
+        touch( $this->tempDir . ( $path = '/foo' ) );
+        $cacheMetaData->created( $path, 123 );
+    }
+
+    public function testCreateCacheInNonexistingDir()
+    {
+        $cacheMetaData = new Sqlite( $this->tempDir . 'cache/' );
+
+        touch( $this->tempDir . ( $path = '/foo' ) );
+        $cacheMetaData->created( $path, 123 );
     }
 
     public function testReCreateCacheEntry()
     {
-        $cacheMetaData = new \vcsCacheFileSystemMetaData( $this->tempDir );
+        $cacheMetaData = new Sqlite( $this->tempDir );
 
-        file_put_contents( $this->tempDir . ( $path = '/foo' ), '0123456789' );
+        touch( $this->tempDir . ( $path = '/foo' ) );
         $cacheMetaData->created( $path, 123 );
         $cacheMetaData->created( $path, 123 );
     }
 
     public function testUpdateAccessTime()
     {
-        $cacheMetaData = new \vcsCacheFileSystemMetaData( $this->tempDir );
+        $cacheMetaData = new Sqlite( $this->tempDir );
 
-        file_put_contents( $this->tempDir . ( $path = '/foo' ), '0123456789' );
-        $cacheMetaData->created( $path, 10 );
+        touch( $this->tempDir . ( $path = '/foo' ) );
+        $cacheMetaData->created( $path, 123 );
         $cacheMetaData->accessed( $path );
     }
 
     public function testClearCache()
     {
-        $cacheMetaData = new \vcsCacheFileSystemMetaData( $this->tempDir );
+        $cacheMetaData = new Sqlite( $this->tempDir );
 
-        file_put_contents( $this->tempDir . ( $path = '/foo' ), '0123456789' );
-        $cacheMetaData->created( $path, 10 );
+        touch( $this->tempDir . ( $path = '/foo' ) );
+        $cacheMetaData->created( $path, 123 );
         $cacheMetaData->accessed( $path );
         $cacheMetaData->cleanup( 0, 0. );
 
@@ -58,15 +76,13 @@ class FileSystemCacheMetaDataTest extends TestCase
 
     public function testClearOnlyFirstFile()
     {
-        $cacheMetaData = new \vcsCacheFileSystemMetaData( $this->tempDir );
+        $cacheMetaData = new Sqlite( $this->tempDir );
 
-        file_put_contents( $this->tempDir . ( $path1 = '/foo1' ), '0123456789' );
+        touch( $this->tempDir . ( $path1 = '/foo1' ) );
         $cacheMetaData->created( $path1, 10, 1 );
-        sleep( 1 );
-        file_put_contents( $this->tempDir . ( $path2 = '/foo2' ), '0123456789' );
+        touch( $this->tempDir . ( $path2 = '/foo2' ) );
         $cacheMetaData->created( $path2, 10, 2 );
-        sleep( 1 );
-        file_put_contents( $this->tempDir . ( $path3 = '/foo3' ), '0123456789' );
+        touch( $this->tempDir . ( $path3 = '/foo3' ) );
         $cacheMetaData->created( $path3, 10, 3 );
 
         $cacheMetaData->cleanup( 25, 1. );
@@ -89,18 +105,15 @@ class FileSystemCacheMetaDataTest extends TestCase
 
     public function testUpdateAccessTimePurge()
     {
-        $cacheMetaData = new \vcsCacheFileSystemMetaData( $this->tempDir );
+        $cacheMetaData = new Sqlite( $this->tempDir );
 
-        file_put_contents( $this->tempDir . ( $path1 = '/foo1' ), '0123456789' );
+        touch( $this->tempDir . ( $path1 = '/foo1' ) );
         $cacheMetaData->created( $path1, 10, 1 );
-        file_put_contents( $this->tempDir . ( $path2 = '/foo2' ), '0123456789' );
+        touch( $this->tempDir . ( $path2 = '/foo2' ) );
         $cacheMetaData->created( $path2, 10, 2 );
-        file_put_contents( $this->tempDir . ( $path3 = '/foo3' ), '0123456789' );
+        touch( $this->tempDir . ( $path3 = '/foo3' ) );
         $cacheMetaData->created( $path3, 10, 3 );
 
-        // Sleep one second to ensure a different ctime on systems, which do
-        // not support chaning the ctime with touch
-        sleep( 1 );
         $cacheMetaData->accessed( $path1, 4 );
 
         $cacheMetaData->cleanup( 25, 1. );
@@ -121,4 +134,3 @@ class FileSystemCacheMetaDataTest extends TestCase
         );
     }
 }
-

@@ -11,6 +11,8 @@ namespace Vcs\Wrapper\HgCli;
 use \Vcs\TestCase;
 use \RecursiveIteratorIterator;
 
+use \Vcs\Cache;
+
 /**
  * @group mercurial
  * Tests for the SQLite cache meta data handler
@@ -28,7 +30,7 @@ class DirectoryTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     public function testIterateRootDirContents()

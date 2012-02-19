@@ -10,6 +10,8 @@ namespace Vcs\Wrapper\CvsCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Cache;
+
 /**
  * Tests for the CVS cli wrapper checkout implementation.
  */
@@ -29,7 +31,7 @@ class CheckoutTest extends TestCase
 
         // Create a cache, required for all CVS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     /**

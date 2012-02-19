@@ -11,6 +11,7 @@ namespace Vcs\Wrapper\Archive;
 use \Vcs\TestCase;
 use \RecursiveIteratorIterator;
 
+use \Vcs\Cache;
 use \Vcs\Wrapper\Archive\File;
 use \Vcs\Wrapper\Archive\Directory;
 use \Vcs\Wrapper\Archive\Checkout\Zip;
@@ -31,7 +32,7 @@ class DirectoryTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     public function testIterateRootDirContents()

@@ -17,23 +17,25 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Cache;
+
 /**
  * Interface indicating that an object can be cached. To be cacheable the
  * implementing class needs the to implement __set_state method.
+ *
+ * @version $Revision$
  */
-interface arbitCacheable
+interface Cacheable
 {
     /**
      * Recreate struct exported by var_export()
      * 
      * @param array $properties 
-     * @return arbitCacheable
+     * @return \Vcs\Cache\Cacheable
      */
     public static function __set_state( array $properties );
 }

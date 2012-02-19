@@ -10,6 +10,8 @@ namespace Vcs\Wrapper\HgCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Cache;
+
 /**
  * @group mercurial
  * Tests for the SQLite cache meta data handler
@@ -27,7 +29,7 @@ class CheckoutTest extends TestCase
 
         // Create a cache, required for all VCS wrappers to store metadata
         // information
-        \vcsCache::initialize( $this->createTempDir() );
+        Cache::initialize( $this->createTempDir() );
     }
 
     /**

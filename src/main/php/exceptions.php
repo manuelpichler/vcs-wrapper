@@ -79,48 +79,6 @@ class vcsRuntimeException extends vcsException
 }
 
 /**
- * Exception thrown, when the cache is used, but not initialized.
- *
- * @package VCSWrapper
- * @subpackage Exception
- * @version $Revision$
- */
-class vcsCacheNotInitializedException extends vcsException
-{
-    /**
-     * Construct exception
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct( 'Cache has not been initialized.' );
-    }
-}
-
-/**
- * Exception thrown when a value is passed to the cache, which is not
- * cacheable.
- *
- * @package VCSWrapper
- * @subpackage Exception
- * @version $Revision$
- */
-class vcsNotCacheableException extends vcsException
-{
-    /**
-     * Construct exception
-     *
-     * @param mixed $value
-     * @return void
-     */
-    public function __construct( $value )
-    {
-        parent::__construct( 'Value of type ' . gettype( $value ) . ' cannot be cached. Only arrays, scalar values and objects implementing arbitCacheable are allowed.' );
-    }
-}
-
-/**
  * Exception thrown when a checkout of a repository failed.
  *
  * @package VCSWrapper

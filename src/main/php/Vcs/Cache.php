@@ -17,11 +17,17 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
+
+namespace Vcs;
+
+use \Vcs\Cache\Cacheable;
+use \Vcs\Cache\NotCacheableException;
+use \Vcs\Cache\NotInitializedException;
+use \Vcs\Cache\Metadata\Sqlite;
+use \Vcs\Cache\Metadata\FileSystem;
 
 /**
  * Cache handler for VCS meta data
@@ -38,11 +44,9 @@
  * has to be triggered manually (cron or something). With the SQLite cache
  * metadata storage this will happen automatically.
  *
- * @package VCSWrapper
- * @subpackage Cache
  * @version $Revision$
  */
-class vcsCache
+class Cache
 {
     /**
      * Cache path, used to store the actual cache contents
@@ -77,7 +81,7 @@ class vcsCache
      * Handler to store the cache meta data, like file access time and overall
      * storage volumne.
      *
-     * @var vcsCacheMetaData
+     * @var \Vcs\Cache\Metadata
      */
     protected static $metaDataHandler = null;
 
@@ -87,8 +91,6 @@ class vcsCache
      * The cache is only accessed statically and should be configured using the
      * static initialize method. Therefore this constructor is protected to not
      * be called from the outside.
-     *
-     * @return void
      */
     protected function __construct()
     {
@@ -124,11 +126,11 @@ class vcsCache
         {
             // SQLite metadata cache handler disabled for now, since it has 
             // lock issues.
-            self::$metaDataHandler = new vcsCacheSqliteMetaData( self::$path );
+            self::$metaDataHandler = new Sqlite( self::$path );
         }
         else
         {
-            self::$metaDataHandler = new vcsCacheFileSystemMetaData( self::$path );
+            self::$metaDataHandler = new FileSystem( self::$path );
         }
     }
 
@@ -166,7 +168,7 @@ class vcsCache
     {
         if ( self::$path === null )
         {
-            throw new vcsCacheNotInitializedException();
+            throw new NotInitializedException();
         }
 
         $cacheFile = self::getFileName( $resource, $version, $key );
@@ -184,7 +186,7 @@ class vcsCache
      *
      * Cache the meta data, identified by the $key, for the given resource in
      * the given version. You may cache all scalar values, arrays and objects
-     * which are implementing the interface arbitCacheable.
+     * which are implementing the interface Cacheable.
      *
      * @param string $resource 
      * @param string $version 
@@ -196,14 +198,14 @@ class vcsCache
     {
         if ( self::$path === null )
         {
-            throw new vcsCacheNotInitializedException();
+            throw new NotInitializedException();
         }
 
         if ( !is_scalar( $value ) &&
              !is_array( $value ) &&
-             ( !$value instanceof arbitCacheable ) )
+             ( !$value instanceof Cacheable ) )
         {
-            throw new vcsNotCacheableException( $value );
+            throw new NotCacheableException( $value );
         }
 
         $cacheFile = self::getFileName( $resource, $version, $key );
@@ -233,7 +235,7 @@ class vcsCache
     {
         if ( self::$path === null )
         {
-            throw new vcsCacheNotInitializedException();
+            throw new NotInitializedException();
         }
 
         self::$metaDataHandler->cleanup( self::$size, self::$cleanupRate );

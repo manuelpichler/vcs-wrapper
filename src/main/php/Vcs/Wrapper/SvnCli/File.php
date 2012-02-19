@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\SvnCli;
 
+use \Vcs\Cache;
+
 /**
  * File implementation vor SVN Cli wrapper
  *
@@ -98,15 +100,15 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $blame = \vcsCache::get( $this->path, $version, 'blame' ) ) === false )
+        if ( ( $blame = Cache::get( $this->path, $version, 'blame' ) ) === false )
         {
             // Refetch the basic blamermation, and cache it.
             $process = new Process( 'svn', $this->username, $this->password );
             $process->argument( '--xml' );
 
             // Execute command
-            $return = $process->argument( 'blame' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
-            $xml = \arbitXml::loadString( $process->stdoutOutput );
+            $process->argument( 'blame' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            $xml = simplexml_load_string( $process->stdoutOutput );
 
             // Check if blame information si available. Is absent fro binary
             // files.
@@ -117,17 +119,19 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
 
             $blame = array();
             $contents = preg_split( '(\r\n|\r|\n)', $this->getVersionedContent( $version ) );
-            foreach ( $xml->target[0]->entry as $nr => $entry )
+
+            $offset = 0;
+            foreach ( $xml->target[0]->entry as $entry )
             {
                 $blame[] = new \vcsBlameStruct(
-                    $contents[$nr],
-                    $entry->commit[0]['revision'],
-                    $entry->commit[0]->author,
-                    strtotime( $entry->commit[0]->date )
+                    (string) $contents[$offset++],
+                    (string) $entry->commit[0]['revision'],
+                    (string) $entry->commit[0]->author,
+                    strtotime( (string) $entry->commit[0]->date )
                 );
             }
 
-            \vcsCache::cache( $this->path, $version, 'blame', $blame );
+            Cache::cache( $this->path, $version, 'blame', $blame );
         }
 
         return $blame;
@@ -148,15 +152,15 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        if ( ( $content = \vcsCache::get( $this->path, $version, 'content' ) ) === false )
+        if ( ( $content = Cache::get( $this->path, $version, 'content' ) ) === false )
         {
             // Refetch the basic content information, and cache it.
             $process = new Process( 'svn', $this->username, $this->password );
             $process->argument( '-r' . $version );
 
             // Execute command
-            $return = $process->argument( 'cat' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
-            \vcsCache::cache( $this->path, $version, 'content', $content = $process->stdoutOutput );
+            $process->argument( 'cat' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
+            Cache::cache( $this->path, $version, 'content', $content = $process->stdoutOutput );
         }
 
         return $content;

@@ -23,6 +23,7 @@
 
 namespace Vcs\Wrapper\HgCli;
 
+use \Vcs\Cache;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -102,7 +103,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        $blame = \vcsCache::get( $this->path, $version, 'blame' );
+        $blame = Cache::get( $this->path, $version, 'blame' );
         if ( $blame === false )
         {
             $shortHashCache = array();
@@ -176,7 +177,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
                 $blame[] = new \vcsBlameStruct( $line, $revision, $alias, strtotime( $date ) );
             }
 
-            \vcsCache::cache( $this->path, $version, 'blame', $blame );
+            Cache::cache( $this->path, $version, 'blame', $blame );
         }
 
         return $blame;
@@ -200,7 +201,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
             throw new \vcsNoSuchVersionException( $this->path, $version );
         }
 
-        $diff = \vcsCache::get( $this->path, $version, 'diff' );
+        $diff = Cache::get( $this->path, $version, 'diff' );
         if ( $diff === false )
         {
             // Refetch the basic content information, and cache it.
@@ -218,7 +219,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
             // Parse resulting unified diff
             $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
-            \vcsCache::cache( $this->path, $version, 'diff', $diff );
+            Cache::cache( $this->path, $version, 'diff', $diff );
         }
 
         return $diff;

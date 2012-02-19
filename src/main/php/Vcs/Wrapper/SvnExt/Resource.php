@@ -23,6 +23,7 @@
 
 namespace Vcs\Wrapper\SvnExt;
 
+use \Vcs\Cache;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -45,12 +46,12 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      * Get the base information, like version, author, etc for the current
      * resource in the current version.
      *
-     * @return arbitXml
+     * @return array
      */
     protected function getResourceInfo()
     {
         if ( ( $this->currentVersion === null ) ||
-             ( ( $info = \vcsCache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
+             ( ( $info = Cache::get( $this->path, $this->currentVersion, 'info' ) ) === false ) )
         {
             // Fecth for specified version, if set
             if ( $this->currentVersion !== null )
@@ -63,7 +64,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             }
 
             $info = $info[0];
-            \vcsCache::cache( $this->path, $this->currentVersion = (string) $info['last_changed_rev'], 'info', $info );
+            Cache::cache( $this->path, $this->currentVersion = (string) $info['last_changed_rev'], 'info', $info );
         }
 
         return $info;
@@ -74,11 +75,11 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
      *
      * Get the full log for the current resource up tu the current revision
      *
-     * @return arbitXml
+     * @return \vcsLogEntry[]
      */
     protected function getResourceLog()
     {
-        if ( ( $log = \vcsCache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
+        if ( ( $log = Cache::get( $this->path, $this->currentVersion, 'log' ) ) === false )
         {
             $svnLog = svn_log( $this->root . $this->path );
 
@@ -95,7 +96,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             uksort( $log, array( $this, 'compareVersions' ) );
             $last = end( $log );
 
-            \vcsCache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
+            Cache::cache( $this->path, $this->currentVersion = (string) $last->version, 'log', $log );
         }
 
         return $log;
@@ -115,11 +116,11 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
         // checkout.
         return null;
 
-        if ( ( $value = \vcsCache::get( $this->path, $this->currentVersion, $property ) ) === false )
+        if ( ( $value = Cache::get( $this->path, $this->currentVersion, $property ) ) === false )
         {
             $rep   = svn_repos_open( $this->root );
             $value = svn_fs_node_prop( $rep, $this->path, 'svn:' . $property );
-            \vcsCache::cache( $this->path, $this->currentVersion, $property, $value );
+            Cache::cache( $this->path, $this->currentVersion, $property, $value );
         }
 
         return $value;
@@ -246,7 +247,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
     {
         $current = ( $current === null ) ? $this->getVersionString() : $current;
 
-        if ( ( $diff = \vcsCache::get( $this->path, $version, 'diff' ) ) === false )
+        if ( ( $diff = Cache::get( $this->path, $version, 'diff' ) ) === false )
         {
             list( $diffStream, $errors ) = svn_diff( $this->root . $this->path, $version, $this->root . $this->path, $current );
             $diffContents = '';
@@ -259,7 +260,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             // Execute command
             $parser = new UnifiedParser();
             $diff   = $parser->parseString( $diffContents );
-            \vcsCache::cache( $this->path, $version, 'diff', $diff );
+            Cache::cache( $this->path, $version, 'diff', $diff );
         }
 
         foreach ( $diff as $fileDiff )
