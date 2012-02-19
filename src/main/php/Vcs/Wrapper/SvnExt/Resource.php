@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\SvnExt;
 
+use \Vcs\Diff\Parser\UnifiedParser;
+
 /**
  * Resource implementation vor SVN Ext wrapper
  *
@@ -255,7 +257,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
             fclose( $diffStream );
 
             // Execute command
-            $parser = new \vcsUnifiedDiffParser();
+            $parser = new UnifiedParser();
             $diff   = $parser->parseString( $diffContents );
             \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }

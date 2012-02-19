@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\GitCli;
 
+use \Vcs\Diff\Parser\UnifiedParser;
+
 /**
  * File implementation vor Git Cli wrapper
  *
@@ -156,7 +158,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
             $process->argument( $version . '..' . $current )->argument( new \pbsPathArgument( '.' . $this->path ) )->execute();
 
             // Parse resulting unified diff
-            $parser = new \vcsUnifiedDiffParser();
+            $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
             \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper diff line struct
+ * PHP VCS wrapper diff struct
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs\Diff;
+
 /**
- * Basic struct containing a diff line
+ * Basic struct containing all diff chunks for one file
  *
- * @package VCSWrapper
- * @subpackage Diff
  * @version $Revision$
  */
-class vcsDiffLine extends vcsBaseStruct
+class Diff extends \vcsBaseStruct
 {
     /**
      * Array containing the structs properties.
@@ -38,51 +36,36 @@ class vcsDiffLine extends vcsBaseStruct
      * @var array
      */
     protected $properties = array(
-        'type'    => null,
-        'content' => null,
+        'from'   => null,
+        'to'     => null,
+        'chunks' => null,
     );
-
-    /**
-     * A line in a diff, which is new in the destination file 
-     */
-    const ADDED = 1;
-
-    /**
-     * A line in a diff, which has been removed in the destination file 
-     */
-    const REMOVED = 2;
-
-    /**
-     * A line in the diff which is equal in the source and the destination file
-     */
-    const UNCHANGED = 3;
 
     /**
      * Construct diff from properties
      * 
-     * @param int $type 
-     * @param string $content 
-     * @return vcsDiffLine
+     * @param string $from 
+     * @param string $to 
+     * @param array $chunks
      */
-    public function __construct( $type = self::UNCHANGED, $content = null )
+    public function __construct( $from = null, $to = null, array $chunks = array() )
     {
-        $this->type    = $type;
-        $this->content = $content;
+        $this->from   = $from;
+        $this->to     = $to;
+        $this->chunks = $chunks;
     }
 
     /**
      * Recreate struct exported by var_export()
-     *
-     * Recreate struct exported by var_export()
      * 
      * @ignore
      * @param array $properties 
-     * @param mixed $class 
-     * @return void
+     * @param string $class 
+     * @return \Vcs\Diff\Diff
      */
     public static function __set_state( array $properties, $class = __CLASS__ )
     {
-        return vcsBaseStruct::__set_state( $properties, $class );
+        return \vcsBaseStruct::__set_state( $properties, $class );
     }
 }
 

@@ -2,7 +2,7 @@
 
  return array (
   0 => 
-  vcsDiff::__set_state(array(
+  \Vcs\Diff\Diff::__set_state(array(
      'properties' => 
     array (
       'from' => 'lao',
@@ -10,7 +10,7 @@
       'chunks' => 
       array (
         0 => 
-        vcsDiffChunk::__set_state(array(
+        \Vcs\Diff\Chunk::__set_state(array(
            'properties' => 
           array (
             'start' => 1,
@@ -20,7 +20,7 @@
             'lines' => 
             array (
               0 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 2,
@@ -28,7 +28,7 @@
                 ),
               )),
               1 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 2,
@@ -36,7 +36,7 @@
                 ),
               )),
               2 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -44,7 +44,7 @@
                 ),
               )),
               3 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 2,
@@ -52,7 +52,7 @@
                 ),
               )),
               4 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 1,
@@ -60,7 +60,7 @@
                 ),
               )),
               5 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 1,
@@ -68,7 +68,7 @@
                 ),
               )),
               6 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -76,7 +76,7 @@
                 ),
               )),
               7 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -84,7 +84,7 @@
                 ),
               )),
               8 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -95,7 +95,7 @@
           ),
         )),
         1 => 
-        vcsDiffChunk::__set_state(array(
+        \Vcs\Diff\Chunk::__set_state(array(
            'properties' => 
           array (
             'start' => 9,
@@ -105,7 +105,7 @@
             'lines' => 
             array (
               0 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -113,7 +113,7 @@
                 ),
               )),
               1 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -121,7 +121,7 @@
                 ),
               )),
               2 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 3,
@@ -129,7 +129,7 @@
                 ),
               )),
               3 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 1,
@@ -137,7 +137,7 @@
                 ),
               )),
               4 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 1,
@@ -145,7 +145,7 @@
                 ),
               )),
               5 => 
-              vcsDiffLine::__set_state(array(
+              \Vcs\Diff\Line::__set_state(array(
                  'properties' => 
                 array (
                   'type' => 1,

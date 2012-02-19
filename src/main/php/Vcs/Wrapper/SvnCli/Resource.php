@@ -23,6 +23,8 @@
 
 namespace Vcs\Wrapper\SvnCli;
 
+use \Vcs\Diff\Parser\UnifiedParser;
+
 /**
  * Resource implementation vor SVN Cli wrapper
  *
@@ -321,7 +323,7 @@ abstract class Resource extends \vcsResource implements \vcsVersioned, \vcsAutho
 
             // Execute command
             $return = $process->argument( 'diff' )->argument( new \pbsPathArgument( $this->root . $this->path ) )->execute();
-            $parser = new \vcsUnifiedDiffParser();
+            $parser = new UnifiedParser();
             $diff   = $parser->parseString( $process->stdoutOutput );
             \vcsCache::cache( $this->path, $version, 'diff', $diff );
         }
