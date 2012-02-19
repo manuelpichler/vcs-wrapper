@@ -23,12 +23,14 @@
 
 namespace Vcs\Wrapper\Archive;
 
+use \Vcs\FileNotFoundException;
+
 /**
  * Handler for archive based "checkouts"
  *
  * @version $Revision$
  */
-abstract class Checkout extends Directory implements \vcsCheckout
+abstract class Checkout extends Directory implements \Vcs\Checkout
 {
     /**
      * Construct repository with repository root path
@@ -67,7 +69,7 @@ abstract class Checkout extends Directory implements \vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
+     * Method either returns a \Vcs\Checkout, a \Vcs\Directory or a \Vcs\File
      * instance, depending on the given path.
      * 
      * @param string $path
@@ -80,7 +82,7 @@ abstract class Checkout extends Directory implements \vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( $fullPath, $this->root ) !== 0 ) )
         {
-            throw new \vcsFileNotFoundException( $path );
+            throw new FileNotFoundException( $path );
         }
 
         switch ( true )

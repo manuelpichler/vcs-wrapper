@@ -28,7 +28,7 @@ namespace Vcs\Wrapper\Archive;
  *
  * @version $Revision$
  */
-class File extends Resource implements \vcsFile
+class File extends Resource implements \Vcs\File
 {
     /**
      * Get file contents

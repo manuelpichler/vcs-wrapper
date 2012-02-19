@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper fetchable interface
+ * PHP VCS wrapper authored interface
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,28 +17,30 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs;
+
 /*
- * Interface for versioned resources which can be fetched from earlier versions
+ * Interface for resources with available user information
  *
- * This implemented should be implemented by VCS for resources, which can be
- * fetched in earlier revisions then the current revision.
+ * This interface should be implemented by resources which have information
+ * about the authors which changed / created the contents available.
  */
-interface vcsFetchable extends vcsVersioned
+interface Authored extends Versioned
 {
     /**
-     * Get content for version
+     * Get author 
      *
-     * Get the contents of the current resource in the specified version.
+     * Return author information for the resource. Optionally the $version
+     * parameter may be passed to the method to specify a version the author
+     * information should be returned for.
      *
-     * @param string $version 
+     * @param mixed $version 
      * @return string
      */
-    public function getVersionedContent( $version );
+    public function getAuthor( $version = null );
 }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper base metadata cache metadata handler
+ * PHP VCS wrapper fetchable interface
  *
  * This file is part of vcs-wrapper.
  *
@@ -21,25 +21,24 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Vcs\Cache;
+namespace Vcs;
 
-use \LogicException;
-
-/**
- * Exception thrown when a value is passed to the cache, which is not
- * cacheable.
+/*
+ * Interface for versioned resources which can be fetched from earlier versions
  *
- * @version $Revision$
+ * This implemented should be implemented by VCS for resources, which can be
+ * fetched in earlier revisions then the current revision.
  */
-class NotCacheableException extends LogicException
+interface Fetchable extends Versioned
 {
     /**
-     * Construct exception
+     * Get content for version
      *
-     * @param mixed $value
+     * Get the contents of the current resource in the specified version.
+     *
+     * @param string $version 
+     * @return string
      */
-    public function __construct( $value )
-    {
-        parent::__construct( 'Value of type ' . gettype( $value ) . ' cannot be cached. Only arrays, scalar values and objects implementing Cacheable are allowed.' );
-    }
+    public function getVersionedContent( $version );
 }
+

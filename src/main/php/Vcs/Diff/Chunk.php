@@ -23,12 +23,14 @@
 
 namespace Vcs\Diff;
 
+use \Vcs\Struct;
+
 /**
  * Basic struct containing a diff chunk
  *
  * @version $Revision$
  */
-class Chunk extends \vcsBaseStruct
+class Chunk extends Struct
 {
     /**
      * Array containing the structs properties.
@@ -71,7 +73,7 @@ class Chunk extends \vcsBaseStruct
      */
     public static function __set_state( array $properties, $class = __CLASS__ )
     {
-        return \vcsBaseStruct::__set_state( $properties, $class );
+        return Struct::__set_state( $properties, $class );
     }
 }
 

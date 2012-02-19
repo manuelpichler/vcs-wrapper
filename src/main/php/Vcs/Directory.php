@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper diffable interface
+ * PHP VCS wrapper abstract directory base class
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,31 +17,27 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs;
+
+use \RecursiveIterator;
+
 /*
- * Interface for versioned resources which can be diffed with other versions
+ * Base class for directories in the VCS wrapper.
  *
- * This interface should be implemented for VCS by resources which can compute
- * a diff between different versions of the given VCS.
+ * This class should be extended by the various wrappers to represent
+ * directories in the respective VCS. In the wrapper implementations this base
+ * class should be extended with interfaces annotating the VCS features beside
+ * basic directory iteration.
+ *
+ * This class provides a base implementation for Iterator, which might be
+ * overwritten, but by default the Iterator iterates over the $ressources
+ * array.
  */
-interface vcsDiffable extends vcsVersioned
+interface Directory extends RecursiveIterator
 {
-    /**
-     * Get diff
-     *
-     * Get the diff between the current version and the given version.
-     * Optionally you may specify another version then the current one as the
-     * diff base as the second parameter.
-     *
-     * @param string $version 
-     * @param string $current 
-     * @return vcsResource
-     */
-    public function getDiff( $version, $current = null );
 }
 

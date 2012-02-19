@@ -31,16 +31,6 @@
 
 spl_autoload_register( function( $class ) {
     static $paths = array(
-        'vcsBaseStruct'                                    => 'struct.php',
-        'vcsBlameStruct'                                   => 'blame.php',
-        'vcsException'                                     => 'exceptions.php',
-        'vcsNoSuchFileException'                           => 'exceptions.php',
-        'vcsRuntimeException'                              => 'exceptions.php',
-        'vcsCheckoutFailedException'                       => 'exceptions.php',
-        'vcsNoSuchVersionException'                        => 'exceptions.php',
-        'vcsInvalidZipArchiveException'                    => 'exceptions.php',
-        'vcsInvalidRepositoryUrlException'                 => 'exceptions.php',
-        'vcsFileNotFoundException'                         => 'exceptions.php',
         'pbsSystemProcessInvalidCustomDescriptorException' => 'external/exceptions/system_process/invalidCustomFileDescriptor.php',
         'pbsSystemProcessNonZeroExitCodeException'         => 'external/exceptions/system_process/nonZeroExitCode.php',
         'pbsSystemProcessNotRunningException'              => 'external/exceptions/system_process/notRunning.php',
@@ -49,22 +39,7 @@ spl_autoload_register( function( $class ) {
         'pbsEscapedArgument'                               => 'external/system_process/argument/escaped.php',
         'pbsPathArgument'                                  => 'external/system_process/argument/path.php',
         'pbsUnescapedArgument'                             => 'external/system_process/argument/unescaped.php',
-        'arbitException'                                   => 'external/xml/exceptions.php',
-        'arbitNoSuchFileException'                         => 'external/xml/exceptions.php',
-        'arbitAccessException'                             => 'external/xml/exceptions.php',
-        'arbitValueException'                              => 'external/xml/exceptions.php',
-        'vcsLogEntry'                                      => 'log_entry.php',
-        'vcsResource'                                      => 'resource.php',
-        'vcsDirectory'                                     => 'interfaces/directory.php',
-        'vcsCheckout'                                      => 'interfaces/checkout.php',
-        'vcsFile'                                          => 'interfaces/file.php',
-        'vcsVersioned'                                     => 'interfaces/versioned.php',
-        'vcsAuthored'                                      => 'interfaces/authored.php',
-        'vcsLogged'                                        => 'interfaces/logged.php',
-        'vcsDiffable'                                      => 'interfaces/diffable.php',
-        'vcsBlameable'                                     => 'interfaces/blameable.php',
         'pbsSystemProcess'                                 => 'external/system_process/systemProcess.php',
-        'vcsFetchable'                                     => 'interfaces/fetchable.php',
     );
 
     if ( isset( $paths[$class] ) )

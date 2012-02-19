@@ -25,6 +25,9 @@
 
 namespace Vcs\Wrapper\BzrCli;
 
+use \Vcs\CheckoutFailedException;
+use \Vcs\FileNotFoundException;
+
 /**
  * Handler for Bzr repositories
  *
@@ -32,7 +35,7 @@ namespace Vcs\Wrapper\BzrCli;
  * @subpackage BzrCliWrapper
  * @version $Revision$
  */
-class Checkout extends Directory implements \vcsCheckout
+class Checkout extends Directory implements \Vcs\Checkout
 {
     /**
      * Construct repository with repository root path
@@ -69,7 +72,7 @@ class Checkout extends Directory implements \vcsCheckout
         {
             if ( count( glob( $this->root . '/*' ) ) )
             {
-                throw new \vcsCheckoutFailedException( $url );
+                throw new CheckoutFailedException( $url );
             }
 
             rmdir( $this->root );
@@ -131,7 +134,7 @@ class Checkout extends Directory implements \vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
+     * Method either returns a \Vcs\Checkout, a \Vcs\Directory or a \Vcs\File
      * instance, depending on the given path.
      * 
      * @param string $path
@@ -144,7 +147,7 @@ class Checkout extends Directory implements \vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( str_replace( '\\', '/', $fullPath ), str_replace( '\\', '/', $this->root ) ) !== 0 ) )
         {
-            throw new \vcsFileNotFoundException( $path );
+            throw new FileNotFoundException( $path );
         }
 
         if ( $path === '/' )

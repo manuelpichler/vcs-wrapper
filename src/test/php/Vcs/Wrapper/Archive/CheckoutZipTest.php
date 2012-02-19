@@ -36,7 +36,7 @@ class CheckoutZipTest extends TestCase
 
     /**
      * @return void
-     * @expectedException \vcsNoSuchFileException
+     * @expectedException \Vcs\NoSuchFileException
      */
     public function testInitializeInvalidCheckout()
     {
@@ -46,7 +46,7 @@ class CheckoutZipTest extends TestCase
 
     /**
      * @return void
-     * @expectedException \vcsInvalidZipArchiveException
+     * @expectedException \Vcs\Wrapper\Archive\Checkout\InvalidZipArchiveException
      */
     public function testInitializeInvalidArchive()
     {
@@ -118,7 +118,7 @@ class CheckoutZipTest extends TestCase
 
     /**
      * @return void
-     * @expectedException \vcsFileNotFoundException
+     * @expectedException \Vcs\FileNotFoundException
      */
     public function testGetInvalid()
     {

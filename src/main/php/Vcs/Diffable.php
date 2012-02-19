@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper logged interface
+ * PHP VCS wrapper diffable interface
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,39 +17,31 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs;
+
 /*
- * Interface for resources with a log available.
+ * Interface for versioned resources which can be diffed with other versions
  *
- * This interface should be implemented by resources which are versioned in
- * the version control system. It allows access to the current version of a
- * resource and also to contents in later versions of a resource.
+ * This interface should be implemented for VCS by resources which can compute
+ * a diff between different versions of the given VCS.
  */
-interface vcsLogged extends vcsVersioned
+interface Diffable extends Versioned
 {
     /**
-     * Get full revision log
+     * Get diff
      *
-     * Return the full revision log for the given resource. The revision log
-     * should be returned as an array of vcsLogEntry objects.
+     * Get the diff between the current version and the given version.
+     * Optionally you may specify another version then the current one as the
+     * diff base as the second parameter.
      *
-     * @return array
+     * @param string $version 
+     * @param string $current 
+     * @return \Vcs\Resource
      */
-    public function getLog();
-
-    /**
-     * Get revision log entry
-     *
-     * Get the revision log entry for the spcified version.
-     * 
-     * @param string $version
-     * @return vcsLogEntry
-     */
-    public function getLogEntry( $version );
+    public function getDiff( $version, $current = null );
 }
 

@@ -23,12 +23,14 @@
 
 namespace Vcs\Wrapper\SvnCli;
 
+use \Vcs\FileNotFoundException;
+
 /**
  * Handler for SVN repositories
  *
  * @version $Revision$
  */
-class Checkout extends Directory implements \vcsCheckout
+class Checkout extends Directory implements \Vcs\Checkout
 {
     /**
      * Construct repository with repository root path
@@ -39,7 +41,6 @@ class Checkout extends Directory implements \vcsCheckout
      * @param string $root
      * @param string $user
      * @param string $password
-     * @return void
      */
     public function __construct( $root, $user = null, $password = null )
     {
@@ -97,7 +98,7 @@ class Checkout extends Directory implements \vcsCheckout
             $process->argument( '-r' . $version );
         }
 
-        $return = $process->argument( 'update' )->argument( new \pbsPathArgument( $this->root ) )->execute();
+        $process->argument( 'update' )->argument( new \pbsPathArgument( $this->root ) )->execute();
 
         // Check if an update has happened
         $this->currentVersion = null;
@@ -110,7 +111,7 @@ class Checkout extends Directory implements \vcsCheckout
      * Get an item from the checkout, specified by its local path. If no item
      * with the specified path exists an exception is thrown.
      *
-     * Method either returns a \vcsCheckout, a \vcsDirectory or a \vcsFile
+     * Method either returns a \Vcs\Checkout, a \Vcs\Directory or a \Vcs\File
      * instance, depending on the given path.
      *
      * @param string $path
@@ -123,7 +124,7 @@ class Checkout extends Directory implements \vcsCheckout
         if ( ( $fullPath === false ) ||
              ( strpos( str_replace( '\\', '/', $fullPath ), str_replace( '\\', '/', $this->root ) ) !== 0 ) )
         {
-            throw new \vcsFileNotFoundException( $path );
+            throw new FileNotFoundException( $path );
         }
 
         switch ( true )

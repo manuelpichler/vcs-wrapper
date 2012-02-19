@@ -23,7 +23,11 @@
 
 namespace Vcs\Wrapper\HgCli;
 
+use \Vcs\Blame;
+use \Vcs\Blameable;
 use \Vcs\Cache;
+use \Vcs\Diffable;
+use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -31,7 +35,7 @@ use \Vcs\Diff\Parser\UnifiedParser;
  *
  * @version $Revision$
  */
-class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
+class File extends Resource implements \Vcs\File, Blameable, Diffable
 {
     /**
      * Regexp to parse a mercurial blame line.
@@ -100,7 +104,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
 
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         $blame = Cache::get( $this->path, $version, 'blame' );
@@ -130,7 +134,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
 
                 if ( preg_match( self::BLAME_REGEXP, $line, $match ) === 0 )
                 {
-                    throw new \vcsRuntimeException( "Could not parse line: $line" );
+                    throw new \RuntimeException( "Could not parse line: $line" );
                 }
 
                 $user       = $match['user'];
@@ -174,7 +178,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
                     $alias = $user;
                 }
 
-                $blame[] = new \vcsBlameStruct( $line, $revision, $alias, strtotime( $date ) );
+                $blame[] = new Blame( $line, $revision, $alias, strtotime( $date ) );
             }
 
             Cache::cache( $this->path, $version, 'blame', $blame );
@@ -192,13 +196,13 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
      *
      * @param string $version 
      * @param string $current 
-     * @return \vcsResource
+     * @return \Vcs\Resource
      */
     public function getDiff( $version, $current = null )
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         $diff = Cache::get( $this->path, $version, 'diff' );

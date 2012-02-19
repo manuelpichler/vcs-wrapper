@@ -11,6 +11,7 @@ namespace Vcs\Wrapper\GitCli;
 use \Vcs\TestCase;
 
 use \Vcs\Cache;
+use \Vcs\LogEntry;
 
 /**
  * Tests for the SQLite cache meta data handler
@@ -182,16 +183,16 @@ class CheckoutTest extends TestCase
 
         $this->assertEquals(
             array(
-                "43fb423f4ee079af2f3cba4e07eb8b10f4476815" => new \vcsLogEntry(
+                "43fb423f4ee079af2f3cba4e07eb8b10f4476815" => new LogEntry(
                     "43fb423f4ee079af2f3cba4e07eb8b10f4476815", "kore", "- Added a first test file\n", 1226920616
                 ),
-                "16d59ca5905f40aba24d0efb6fc5f0d82ab65fbf" => new \vcsLogEntry(
+                "16d59ca5905f40aba24d0efb6fc5f0d82ab65fbf" => new LogEntry(
                     "16d59ca5905f40aba24d0efb6fc5f0d82ab65fbf", "kore", "- Added some test directories\n", 1226921143
                 ),
-                "8faf65e1c48d4908d48a647c1d23df54e1e15e85" => new \vcsLogEntry(
+                "8faf65e1c48d4908d48a647c1d23df54e1e15e85" => new LogEntry(
                     "8faf65e1c48d4908d48a647c1d23df54e1e15e85", "kore", "- Renamed directory\n", 1226921195
                 ),
-                "2037a8d0efd4e51a4dd84161837f8865cf7d34b1" => new \vcsLogEntry(
+                "2037a8d0efd4e51a4dd84161837f8865cf7d34b1" => new LogEntry(
                     "2037a8d0efd4e51a4dd84161837f8865cf7d34b1", "kore", "- Modified file\n", 1226921232
                 ),
             ),
@@ -205,23 +206,22 @@ class CheckoutTest extends TestCase
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
 
         $this->assertEquals(
-            new \vcsLogEntry(
+            new LogEntry(
                 "8faf65e1c48d4908d48a647c1d23df54e1e15e85", "kore", "- Renamed directory\n", 1226921195
             ),
             $repository->getLogEntry( "8faf65e1c48d4908d48a647c1d23df54e1e15e85" )
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetUnknownLogEntry()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-
-        try {
-            $repository->getLogEntry( "no_such_version" );
-            $this->fail( 'Expected \vcsNoSuchVersionException.' );
-        } catch ( \vcsNoSuchVersionException $e )
-        { /* Expected */ }
+        $repository->getLogEntry( "no_such_version" );
     }
 
     public function testIterateCheckoutContents()
@@ -262,18 +262,15 @@ class CheckoutTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\FileNotFoundException
+     */
     public function testGetInvalid()
     {
         $repository = new Checkout( $this->tempDir );
         $repository->initialize( 'file://' . $this->extractRepository( 'git' ) );
-
-        try
-        {
-            $repository->get( '/../' );
-            $this->fail( 'Expected \vcsFileNotFoundException.' );
-        }
-        catch ( \vcsFileNotFoundException $e )
-        { /* Expected */ }
+        $repository->get( '/../' );
     }
 
     public function testGetDirectory()

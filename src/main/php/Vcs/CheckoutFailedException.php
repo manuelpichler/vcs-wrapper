@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper abstract file base class
+ * PHP VCS wrapper abstract directory base class
  *
  * This file is part of vcs-wrapper.
  *
@@ -23,33 +23,24 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-/*
- * Base class for files in the VCS wrapper.
+namespace Vcs;
+
+use \RuntimeException;
+
+/**
+ * Exception thrown when a checkout of a repository failed.
  *
- * This class should be extended by the various wrappers to represent
- * files in the respective VCS. In the wrapper implementations this base
- * class should be extended with interfaces annotating the VCS features beside
- * basic file iteration.
+ * @version $Revision$
  */
-interface vcsFile
+class CheckoutFailedException extends RuntimeException
 {
     /**
-     * Get file contents
-     * 
-     * Get the contents of the current file.
-     * 
-     * @return string
+     * Construct exception
+     *
+     * @param string $url
      */
-    public function getContents();
-
-    /**
-     * Get mime type
-     * 
-     * Get the mime type of the current file. If this information is not
-     * available, just return 'application/octet-stream'.
-     * 
-     * @return string
-     */
-    public function getMimeType();
+    public function __construct( $url )
+    {
+        parent::__construct( "Checkout of repository at '$url' failed." );
+    }
 }
-

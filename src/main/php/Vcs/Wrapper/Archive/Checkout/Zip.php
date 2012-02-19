@@ -25,13 +25,13 @@
 
 namespace Vcs\Wrapper\Archive\Checkout;
 
+use \ZipArchive;
+use \Vcs\NoSuchFileException;
 use \Vcs\Wrapper\Archive\Checkout;
 
 /**
  * Handler for ZIP archive based "checkouts"
  *
- * @package VCSWrapper
- * @subpackage ArchiveWrapper
  * @version $Revision$
  */
 class Zip extends Checkout
@@ -51,15 +51,15 @@ class Zip extends Checkout
     {
         if ( !is_file( $url ) || !is_readable( $url ) )
         {
-            throw new \vcsNoSuchFileException( $url );
+            throw new NoSuchFileException( $url );
         }
 
         // Try to extract given zip archive
-        $archive = new \ZipArchive();
+        $archive = new ZipArchive();
         $return  = $archive->open( $url );
         if ( $return !== true )
         {
-            throw new \vcsInvalidZipArchiveException( $url, $return );
+            throw new InvalidZipArchiveException( $url, $return );
         }
 
         // Extract, if archive has been opened successfully

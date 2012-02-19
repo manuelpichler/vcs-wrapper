@@ -10,7 +10,9 @@ namespace Vcs\Wrapper\CvsCli;
 
 use \Vcs\TestCase;
 
+use \Vcs\Blame;
 use \Vcs\Cache;
+use \Vcs\LogEntry;
 use \Vcs\Diff\Chunk;
 use \Vcs\Diff\Line;
 
@@ -86,13 +88,16 @@ class FileTest extends TestCase
         $this->assertEquals( 'manu', $file->getAuthor( '1.1' ) );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetAuthorWithInvalidVersion()
     {
         $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
         $file = new File( $this->tempDir, '/file' );
-        $this->setExpectedException('\vcsNoSuchVersionException');
         $file->getAuthor( '1.10' );
     }
 
@@ -104,19 +109,19 @@ class FileTest extends TestCase
 
         $this->assertEquals(
             array(
-                '1.1' => new \vcsLogEntry(
+                '1.1' => new LogEntry(
                     '1.1',
                     'manu',
                     '- Added file in subdir',
                     1227507833
                 ),
-                '1.2' => new \vcsLogEntry(
+                '1.2' => new LogEntry(
                     '1.2',
                     'manu',
                     '- A',
                     1227804262
                 ),
-                '1.3' => new \vcsLogEntry(
+                '1.3' => new LogEntry(
                     '1.3',
                     'manu',
                     '- Test file modified.',
@@ -134,7 +139,7 @@ class FileTest extends TestCase
 
         $file = new File( $this->tempDir, '/file' );
         $this->assertEquals(
-            new \vcsLogEntry(
+            new LogEntry(
                 '1.2',
                 'manu',
                 '- Added another line to file',
@@ -144,15 +149,16 @@ class FileTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetUnknownLogEntry()
     {
         $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
         $file = new File( $this->tempDir, '/file' );
-
-        $this->setExpectedException( '\vcsNoSuchVersionException' );
-
         $file->getLogEntry( "no_such_version" );
     }
 
@@ -183,13 +189,16 @@ class FileTest extends TestCase
         $this->assertEquals( "Some test contents\n", $file->getVersionedContent( '1.1' ) );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetFileContentsInvalidVersion()
     {
         $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
         $file = new File( $this->tempDir, '/file' );
-        $this->setExpectedException( '\vcsNoSuchVersionException' );
         $file->getVersionedContent( 'no_such_version' );
     }
 
@@ -201,19 +210,19 @@ class FileTest extends TestCase
         $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertEquals(
             array(
-                new \vcsBlameStruct(
+                new Blame(
                     'Some test contents',
                     '1.1',
                     'manu',
                     1227481200
                 ),
-                new \vcsBlameStruct(
+                new Blame(
                     'More test contents',
                     '1.2',
                     'manu',
                     1227740400
                 ),
-                new \vcsBlameStruct(
+                new Blame(
                     'And another test line',
                     '1.3',
                     'manu',
@@ -232,7 +241,7 @@ class FileTest extends TestCase
         $file = new File( $this->tempDir, '/dir1/file' );
         $this->assertEquals(
             array(
-                new \vcsBlameStruct(
+                new Blame(
                     'Some test contents',
                     '1.1',
                     'manu',
@@ -243,13 +252,16 @@ class FileTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     * @expectedException \Vcs\NoSuchVersionException
+     */
     public function testGetFileBlameWithInvalidVersion()
     {
         $checkout = new Checkout( $this->tempDir );
         $checkout->initialize( $this->extractRepository( 'cvs' ) . '#cvs' );
 
         $file = new File( $this->tempDir, '/dir1/file' );
-        $this->setExpectedException( '\vcsNoSuchVersionException' );
         $file->blame( 'no_such_version' );
     }
 

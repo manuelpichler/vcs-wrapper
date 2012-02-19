@@ -23,14 +23,18 @@
 
 namespace Vcs\Wrapper\SvnCli;
 
+use \Vcs\Blame;
+use \Vcs\Blameable;
 use \Vcs\Cache;
+use \Vcs\Fetchable;
+use \Vcs\NoSuchVersionException;
 
 /**
  * File implementation vor SVN Cli wrapper
  *
  * @version $Revision$
  */
-class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
+class File extends Resource implements \Vcs\File, Blameable, Fetchable
 {
     /**
      * Get file contents
@@ -97,7 +101,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
 
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         if ( ( $blame = Cache::get( $this->path, $version, 'blame' ) ) === false )
@@ -123,7 +127,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
             $offset = 0;
             foreach ( $xml->target[0]->entry as $entry )
             {
-                $blame[] = new \vcsBlameStruct(
+                $blame[] = new Blame(
                     (string) $contents[$offset++],
                     (string) $entry->commit[0]['revision'],
                     (string) $entry->commit[0]->author,
@@ -149,7 +153,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable
     {
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         if ( ( $content = Cache::get( $this->path, $version, 'content' ) ) === false )

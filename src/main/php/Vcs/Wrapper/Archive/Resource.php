@@ -28,7 +28,7 @@ namespace Vcs\Wrapper\Archive;
  *
  * @version $Revision$
  */
-abstract class Resource extends \vcsResource
+abstract class Resource extends \Vcs\Resource
 {
 }
 

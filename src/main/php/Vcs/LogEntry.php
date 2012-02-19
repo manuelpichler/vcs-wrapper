@@ -17,20 +17,18 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Vcs;
+
 /**
  * VCS wrapper abstracted log entry
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  */
-class vcsBlameStruct extends vcsBaseStruct
+class LogEntry extends Struct
 {
     /**
      * Array containing the structs properties.
@@ -38,42 +36,39 @@ class vcsBlameStruct extends vcsBaseStruct
      * @var array
      */
     protected $properties = array(
-        'content' => null,
         'version' => null,
         'author'  => null,
+        'message' => null,
         'date'    => null,
     );
 
     /**
      * Construct struct from given values
      * 
-     * @param string $content 
      * @param string $version 
      * @param string $author 
-     * @param int $date 
-     * @return void
+     * @param string $message 
+     * @param int $date
      */
-    public function __construct( $content = null, $version = null, $author = null, $date = null )
+    public function __construct( $version = null, $author = null, $message = null, $date = null )
     {
-        $this->content = (string) $content;
         $this->version = (string) $version;
         $this->author  = (string) $author;
+        $this->message = (string) $message;
         $this->date    = (int) $date;
     }
 
     /**
      * Recreate struct exported by var_export()
-     *
-     * Recreate struct exported by var_export()
      * 
      * @ignore
      * @param array $properties 
      * @param string $class 
-     * @return vcsBlameStruct
+     * @return \Vcs\LogEntry
      */
     public static function __set_state( array $properties, $class = __CLASS__ )
     {
-        return vcsBaseStruct::__set_state( $properties, $class );
+        return Struct::__set_state( $properties, $class );
     }
 }
 

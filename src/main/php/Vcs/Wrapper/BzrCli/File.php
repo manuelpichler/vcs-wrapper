@@ -23,14 +23,18 @@
 
 namespace Vcs\Wrapper\BzrCli;
 
+use \Vcs\Blame;
+use \Vcs\Blameable;
 use \Vcs\Cache;
+use \Vcs\Diffable;
+use \Vcs\NoSuchVersionException;
 
 /**
  * File implementation vor Bazaar Cli wrapper
  *
  * @version $Revision$
  */
-class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
+class File extends Resource implements \Vcs\File, Blameable, Diffable
 {
     /**
      * Get file contents
@@ -90,7 +94,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
 
         if ( !in_array( $version, $this->getVersions(), true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         $blame = Cache::get( $this->path, $version, 'blame' );
@@ -119,7 +123,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsDiffable
                 foreach ( $xmlDoc->entry AS $line )
                 {
 
-                    $blame[] = new \vcsBlameStruct(
+                    $blame[] = new Blame(
                         $line,
                         $line['revno'],
                         $line['author'],

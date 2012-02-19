@@ -17,11 +17,11 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
+
+namespace Vcs;
 
 /*
  * Interface for resources which support blaming of files
@@ -30,7 +30,7 @@
  * line of a file for a specified version. If the VCS spports this fo
  * resources, this interface should be implemented.
  */
-interface vcsBlameable extends vcsAuthored
+interface Blameable extends Authored
 {
     /**
      * Get blame information for resource

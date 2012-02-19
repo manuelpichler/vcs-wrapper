@@ -23,7 +23,12 @@
 
 namespace Vcs\Wrapper\CvsCli;
 
+use \Vcs\Blame;
+use \Vcs\Blameable;
 use \Vcs\Cache;
+use \Vcs\Diffable;
+use \Vcs\Fetchable;
+use \Vcs\NoSuchVersionException;
 use \Vcs\Diff\Parser\UnifiedParser;
 
 /**
@@ -31,7 +36,7 @@ use \Vcs\Diff\Parser\UnifiedParser;
  *
  * @version $Revision$
  */
-class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \vcsDiffable
+class File extends Resource implements \Vcs\File, Blameable, Fetchable, Diffable
 {
     /**
      * Get file contents
@@ -92,7 +97,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
         $versions = $this->getVersions();
         if ( !in_array( $version, $versions, true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         if ( ( $blame = Cache::get( $this->path, $version, 'blame' ) ) !== false )
@@ -126,7 +131,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
 
             preg_match( $regexp, $line, $match );
 
-            $blame[] = new \vcsBlameStruct(
+            $blame[] = new Blame(
                 trim( $match['content'] ),
                 trim( $match['revision'] ),
                 trim( $match['author'] ),
@@ -152,7 +157,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
         $versions = $this->getVersions();
         if ( !in_array( $version, $versions, true ) )
         {
-            throw new \vcsNoSuchVersionException( $this->path, $version );
+            throw new NoSuchVersionException( $this->path, $version );
         }
 
         if ( ( $content = Cache::get( $this->path, $version, 'content' ) ) === false )
@@ -186,7 +191,7 @@ class File extends Resource implements \vcsFile, \vcsBlameable, \vcsFetchable, \
      *
      * @param string $version 
      * @param string $current 
-     * @return \vcsResource
+     * @return \Vcs\Resource
      */
     public function getDiff( $version, $current = null )
     {

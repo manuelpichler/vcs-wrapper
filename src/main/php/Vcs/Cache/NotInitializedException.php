@@ -23,12 +23,14 @@
 
 namespace Vcs\Cache;
 
+use \LogicException;
+
 /**
  * Exception thrown, when the cache is used, but not initialized.
  *
  * @version $Revision$
  */
-class NotInitializedException extends \vcsException
+class NotInitializedException extends LogicException
 {
     /**
      * Construct exception

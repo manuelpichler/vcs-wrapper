@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper abstract directory base class
+ * PHP VCS wrapper abstract file base class
  *
  * This file is part of vcs-wrapper.
  *
@@ -17,25 +17,30 @@
  * along with vcs-wrapper; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package VCSWrapper
- * @subpackage Core
  * @version $Revision$
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-/*
- * Base class for directories in the VCS wrapper.
- *
- * This class should be extended by the various wrappers to represent
- * directories in the respective VCS. In the wrapper implementations this base
- * class should be extended with interfaces annotating the VCS features beside
- * basic directory iteration.
- *
- * This class provides a base implementation for Iterator, which might be
- * overwritten, but by default the Iterator iterates over the $ressources
- * array.
- */
-interface vcsDirectory extends RecursiveIterator
-{
-}
+namespace Vcs;
 
+use \LogicException;
+
+/**
+ * Exception thrown when a checkout url could not be used to access a source
+ * repository.
+ *
+ * @version $Revision$
+ */
+class InvalidRepositoryUrlException extends LogicException
+{
+    /**
+     * Construct exception
+     *
+     * @param string $url
+     * @param string $wrapper
+     */
+    public function __construct( $url, $wrapper )
+    {
+        parent::__construct( 'Invalid ' . $wrapper . ' repository url: "' . $url . '".' );
+    }
+}

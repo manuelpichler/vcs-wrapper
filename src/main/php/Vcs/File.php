@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP VCS wrapper base metadata cache metadata handler
+ * PHP VCS wrapper abstract file base class
  *
  * This file is part of vcs-wrapper.
  *
@@ -21,25 +21,35 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Vcs\Cache;
+namespace Vcs;
 
-use \LogicException;
-
-/**
- * Exception thrown when a value is passed to the cache, which is not
- * cacheable.
+/*
+ * Base class for files in the VCS wrapper.
  *
- * @version $Revision$
+ * This class should be extended by the various wrappers to represent
+ * files in the respective VCS. In the wrapper implementations this base
+ * class should be extended with interfaces annotating the VCS features beside
+ * basic file iteration.
  */
-class NotCacheableException extends LogicException
+interface File
 {
     /**
-     * Construct exception
-     *
-     * @param mixed $value
+     * Get file contents
+     * 
+     * Get the contents of the current file.
+     * 
+     * @return string
      */
-    public function __construct( $value )
-    {
-        parent::__construct( 'Value of type ' . gettype( $value ) . ' cannot be cached. Only arrays, scalar values and objects implementing Cacheable are allowed.' );
-    }
+    public function getContents();
+
+    /**
+     * Get mime type
+     * 
+     * Get the mime type of the current file. If this information is not
+     * available, just return 'application/octet-stream'.
+     * 
+     * @return string
+     */
+    public function getMimeType();
 }
+
